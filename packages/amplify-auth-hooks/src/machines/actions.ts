@@ -46,28 +46,6 @@ export const setConfirmAttributeCompleteStep = (): Step => {
   return 'CONFIRM_ATTRIBUTE_COMPLETE'
 }
 
-export const setChallengeName = ({ event }: ActionParams): ChallengeName | undefined => {
-  const data = event.data as SignInOutput
-  const signInStep = data?.nextStep?.signInStep
-
-  switch (signInStep) {
-    case 'CONFIRM_SIGN_IN_WITH_SMS_CODE':
-      return 'SMS_MFA'
-    case 'CONFIRM_SIGN_IN_WITH_TOTP_CODE':
-      return 'SOFTWARE_TOKEN_MFA'
-    case 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE':
-      return 'EMAIL_OTP'
-    case 'CONTINUE_SIGN_IN_WITH_MFA_SETUP_SELECTION':
-    case 'CONTINUE_SIGN_IN_WITH_EMAIL_SETUP':
-    case 'CONTINUE_SIGN_IN_WITH_TOTP_SETUP':
-      return 'MFA_SETUP'
-    case 'CONTINUE_SIGN_IN_WITH_MFA_SELECTION':
-      return 'SELECT_MFA_TYPE'
-    default:
-      return undefined
-  }
-}
-
 export const setNextSignInStep = ({ event }: ActionParams): SignInStep => {
   const data = (event.output ?? {}) as SignInOutput
   return data.nextStep?.signInStep === 'DONE' ? 'SIGN_IN_COMPLETE' : data.nextStep?.signInStep

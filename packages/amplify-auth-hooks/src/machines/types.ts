@@ -33,24 +33,6 @@ import type {
 import type { AuthSignInWithRedirectInput, AuthSignOutInput } from 'node_modules/@aws-amplify/auth/dist/esm/types'
 import type { AuthCodeDeliveryDetails, AutoSignInCallback } from 'node_modules/@aws-amplify/auth/dist/esm/types/models'
 
-export type ChallengeName =
-  | 'SMS_MFA'
-  | 'SMS_OTP'
-  | 'SOFTWARE_TOKEN_MFA'
-  | 'EMAIL_OTP'
-  | 'SELECT_MFA_TYPE'
-  | 'SELECT_CHALLENGE'
-  | 'MFA_SETUP'
-  | 'PASSWORD'
-  | 'PASSWORD_SRP'
-  | 'PASSWORD_VERIFIER'
-  | 'CUSTOM_CHALLENGE'
-  | 'DEVICE_SRP_AUTH'
-  | 'DEVICE_PASSWORD_VERIFIER'
-  | 'ADMIN_NO_SRP_AUTH'
-  | 'NEW_PASSWORD_REQUIRED'
-  | 'WEB_AUTHN'
-
 export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
 
 export type AuthTOTPSetupDetails = {
@@ -93,7 +75,6 @@ export type AuthEvent = {
 }
 
 export type ActorDoneData = {
-  challengeName?: ChallengeName
   codeDeliveryDetails?: AuthCodeDeliveryDetails<UserAttributeKey>
   missingAttributes?: string[]
   remoteError?: string
@@ -143,7 +124,6 @@ export type UserAttributeStep = 'SHOULD_CONFIRM_USER_ATTRIBUTE' | 'CONFIRM_ATTRI
 export type Step = InitialStep | SignInStep | SignUpStep | ResetPasswordStep | UserAttributeStep
 
 type BaseContext = {
-  challengeName?: ChallengeName
   missingAttributes?: string[]
   remoteError?: string
   step: Step
