@@ -1,2 +1,5 @@
-export * from './machines/index'
-export * from './useAuth'
+export { AuthenticatorContext, AuthenticatorProvider, type AuthStatus } from './context'
+export type * from './hooks/types'
+export { type UseAuthResult, useAuth } from './hooks/useAuth'
+export { useAuthenticator } from './hooks/useAuthenticator'
+export type * from './machines/types'

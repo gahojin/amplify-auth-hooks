@@ -1,7 +1,7 @@
 import type { ResetPasswordOutput } from '@aws-amplify/auth'
-import { forgotPasswordActor } from 'src/machines/forgotPassword/actor'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
+import { forgotPasswordActor } from './actor'
 
 const flushPromises = () => new Promise(setImmediate)
 

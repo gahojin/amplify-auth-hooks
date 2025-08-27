@@ -35,17 +35,16 @@ import type { AuthCodeDeliveryDetails, AutoSignInCallback } from 'node_modules/@
 
 export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
 
+/**
+ * Authenticator routes that can be directly navigated to by user interaction.
+ */
+export type NavigableRoute = 'signIn' | 'signUp' | 'forgotPassword'
+export type InitialRoute = 'signIn' | 'signUp' | 'forgotPassword'
+
 export type AuthTOTPSetupDetails = {
   sharedSecret: string
   getSetupUri: (appName: string, accountName?: string) => URL
 }
-
-export type InvokeActorEventTypes =
-  | 'done.invoke.forgotPasswordActor'
-  | 'done.invoke.signInActor'
-  | 'done.invoke.signUpActor'
-  | 'done.invoke.signOutActor'
-  | 'done.invoke.verifyUserAttributesActor'
 
 export type AuthEventTypes =
   | 'FEDERATED_SIGN_IN'
@@ -60,7 +59,6 @@ export type AuthEventTypes =
   | 'SKIP'
   | 'INIT'
   | 'TOKEN_REFRESH'
-  | InvokeActorEventTypes
 
 // biome-ignore lint/suspicious/noExplicitAny: イベントデータの型は定義出来ない
 export type AuthEventData = Record<PropertyKey, any>
@@ -86,8 +84,6 @@ export type ActorDoneData = {
 }
 
 export type AuthContext = {
-  // biome-ignore lint/suspicious/noExplicitAny: actorの型を設定出来ない
-  childRef?: any
   user?: AuthUser
   config?: {
     initialState?: 'signIn' | 'signUp' | 'forgotPassword'

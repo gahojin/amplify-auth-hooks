@@ -1,7 +1,7 @@
 import type { AuthUser } from '@aws-amplify/auth'
 import { assign, forwardTo, fromPromise, setup } from 'xstate'
-import { defaultHandlers } from '../authenticator/defaultHandlers'
 import { signInActor } from '../machines/signIn/actor'
+import { defaultHandlers } from './defaultHandlers'
 import { forgotPasswordActor } from './forgotPassword/actor'
 import {
   hasCompletedAttributeConfirmation,
@@ -12,17 +12,12 @@ import {
 } from './guards'
 import { signOutActor } from './signOut/actor'
 import { signUpActor } from './signUp/actor'
-import type { ActorDoneData, AuthActorContext, AuthContext, AuthEvent, Handlers, InitialStep } from './types'
+import type { ActorDoneData, AuthContext, AuthEvent, Handlers } from './types'
 import { verifyUserAttributesActor } from './verifyUserAttributes/actor'
 
 export type AuthenticatorMachineOptions = AuthContext['config'] & {
   handlers?: Partial<Handlers>
 }
-
-const _getActorContext = (context: AuthContext, defaultStep: InitialStep): AuthActorContext => ({
-  ...context.actorDoneData,
-  step: context?.actorDoneData?.step ?? defaultStep,
-})
 
 /**
  * @internal
@@ -37,7 +32,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
       events: {} as AuthEvent,
     },
     guards: {
-      hasChildActor: ({ context }) => !!context.childRef,
       hasCompletedAttributeConfirmation: ({ event: { output } }) => hasCompletedAttributeConfirmation(output?.step),
       isInitialStateSignUp: ({ context }) => context.config?.initialState === 'signUp',
       isInitialStateResetPassword: ({ context }) => context.config?.initialState === 'forgotPassword',
@@ -57,7 +51,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     actions: {
       clearActorDoneData: assign({ actorDoneData: undefined }),
       clearUser: assign({ user: undefined }),
-      stopChildActor: assign({ childRef: undefined }),
       forwardToActor: forwardTo('childActor'),
       setUser: assign({ user: ({ event }) => event.output as AuthUser }),
       setActorDoneData: assign(({ event }) => ({ actorDoneData: event.output as ActorDoneData })),
@@ -68,7 +61,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     context: {
       config,
       user: undefined,
-      childRef: undefined,
       hasSetup: false,
     },
     states: {
@@ -115,6 +107,8 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
           FORGOT_PASSWORD: { target: '#authenticator.forgotPasswordActor' },
           SIGN_IN: { target: '#authenticator.signInActor' },
           SIGN_UP: { target: '#authenticator.signUpActor' },
+          FEDERATED_SIGN_IN: { actions: 'forwardToActor' },
+          SUBMIT: { actions: 'forwardToActor' },
         },
       },
       signUpActor: {
@@ -131,6 +125,9 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         exit: 'clearActorDoneData',
         on: {
           SIGN_IN: { target: '#authenticator.signInActor' },
+          FEDERATED_SIGN_IN: { actions: 'forwardToActor' },
+          RESEND: { actions: 'forwardToActor' },
+          SUBMIT: { actions: 'forwardToActor' },
         },
       },
       forgotPasswordActor: {
@@ -142,6 +139,8 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         },
         on: {
           SIGN_IN: { target: '#authenticator.signInActor' },
+          RESEND: { actions: 'forwardToActor' },
+          SUBMIT: { actions: 'forwardToActor' },
         },
       },
       verifyUserAttributesActor: {
@@ -151,6 +150,10 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
           onDone: { actions: 'setActorDoneData', target: '#authenticator.getCurrentUser' },
         },
         exit: 'clearActorDoneData',
+        on: {
+          SKIP: { actions: 'forwardToActor' },
+          SUBMIT: { actions: 'forwardToActor' },
+        },
       },
       authenticated: {
         initial: 'idle',
@@ -180,12 +183,8 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
       },
     },
     on: {
+      CHILD_CHANGED: { actions: assign(({ context }) => context) },
       SIGN_IN_WITH_REDIRECT: { target: '#authenticator.getCurrentUser' },
-      SUBMIT: { actions: 'forwardToActor' },
-      FEDERATED_SIGN_IN: { guard: 'hasChildActor', actions: 'forwardToActor' },
-      RESEND: { guard: 'hasChildActor', actions: 'forwardToActor' },
-      SIGN_IN: { guard: 'hasChildActor', actions: 'forwardToActor' },
-      SKIP: { guard: 'hasChildActor', actions: 'forwardToActor' },
     },
   })
 }

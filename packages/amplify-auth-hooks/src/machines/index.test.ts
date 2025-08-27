@@ -1,8 +1,8 @@
 import type { FetchUserAttributesOutput, GetCurrentUserOutput, SignInOutput } from '@aws-amplify/auth'
-import type { Handlers } from 'src/machines/types'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
 import { createAuthenticatorMachine } from './index'
+import type { Handlers } from './types'
 
 const flushPromises = () => new Promise(setImmediate)
 

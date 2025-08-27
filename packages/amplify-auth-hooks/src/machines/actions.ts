@@ -12,7 +12,6 @@ import type {
   ActorDoneData,
   AuthEvent,
   AuthTOTPSetupDetails,
-  ChallengeName,
   ResetPasswordStep,
   SignInStep,
   SignUpStep,
@@ -64,7 +63,6 @@ export const setNextResetPasswordStep = ({ event }: ActionParams): ResetPassword
 export const setActorDoneData = ({ event }: ActionParams): ActorDoneData => {
   const data = event.output ?? {}
   return {
-    challengeName: data.challengeName,
     missingAttributes: data.missingAttributes,
     remoteError: data.remoteError,
     username: data.username,
@@ -98,9 +96,9 @@ export const setSelectedUserAttribute = ({ event }: ActionParams): string | unde
 }
 
 export const setRemoteError = ({ event }: ActionParams): string => {
-  const output = event.output
-  if (output?.name === 'NoUserPoolError') {
+  const error = event.error
+  if (error?.name === 'NoUserPoolError') {
     return 'Configuration error (see console) – please contact the administrator'
   }
-  return output?.message || output
+  return error?.message || String(error)
 }

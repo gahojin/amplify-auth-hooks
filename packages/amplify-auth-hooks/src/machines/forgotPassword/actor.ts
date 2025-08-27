@@ -1,5 +1,5 @@
 import type { ConfirmResetPasswordInput, ResetPasswordInput, ResetPasswordOutput } from '@aws-amplify/auth'
-import { assign, fromPromise, setup } from 'xstate'
+import { assign, fromPromise, sendParent, setup } from 'xstate'
 import { setCodeDeliveryDetails, setNextResetPasswordStep, setNextSignInStep, setRemoteError } from '../actions'
 import { hasCompletedResetPassword, shouldConfirmResetPassword, shouldResetPassword } from '../guards'
 import type { AuthEvent, Handlers, ResetPasswordContext } from '../types'
@@ -25,6 +25,7 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
       confirmResetPassword: fromPromise<void, ConfirmResetPasswordInput>(({ input }) => handlers.confirmResetPassword(input)),
     },
     actions: {
+      sendParent: sendParent({ type: 'CHILD_CHANGED' }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setNextResetPasswordStep: assign({ step: setNextResetPasswordStep }),
       setRemoteError: assign({ remoteError: setRemoteError }),

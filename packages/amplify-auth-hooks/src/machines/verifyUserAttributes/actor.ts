@@ -31,7 +31,7 @@ export const verifyUserAttributesActor = (handlers: VerifyUserAttributesHandlers
   }).createMachine({
     id: 'vefiryUserAttributesActor',
     initial: 'selectUserAttributes',
-    context: overridesContext ?? {},
+    context: overridesContext ?? { step: 'SIGN_IN' },
     states: {
       selectUserAttributes: {
         initial: 'idle',

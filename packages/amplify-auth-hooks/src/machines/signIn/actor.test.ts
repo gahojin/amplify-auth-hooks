@@ -1,4 +1,5 @@
 import type { ConfirmSignInOutput, FetchUserAttributesOutput, ResendSignUpCodeOutput, ResetPasswordOutput, SignInOutput } from '@aws-amplify/auth'
+import { createTestModel } from '@xstate/graph'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
 import { signInActor } from './actor'
@@ -19,7 +20,7 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }), { parent: vi.fn()})
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -65,7 +66,7 @@ describe('signInActor', () => {
           user: { username: mockUsername, userId: 'userId' },
           step: 'SIGN_IN',
         },
-      ),
+      ),{parent: }
     )
     actor.start()
 
