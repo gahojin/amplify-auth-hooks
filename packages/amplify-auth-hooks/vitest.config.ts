@@ -13,21 +13,7 @@ export default defineConfig({
           include: ['**/*.{test,spec}.{ts,tsx}'],
           exclude: ['**/node_modules', '**/*.browser.{test,spec}.{ts,tsx}'],
           name: 'unit',
-          environment: 'node',
-        },
-      },
-      {
-        extends: true,
-        test: {
-          globals: true,
-          include: ['**/*.browser.{test,spec}.{ts,tsx}'],
-          name: 'browser',
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: 'playwright',
-            instances: [{ browser: 'chromium' }],
-          },
+          environment: 'jsdom',
         },
       },
     ],

@@ -16,8 +16,8 @@ type Props = PropsWithChildren & {
   options?: AuthenticatorMachineOptions
 }
 
-export default ({ children }: Props): JSX.Element => {
-  const machine = useMemo(() => createAuthenticatorMachine(), [])
+export default ({ options, children }: Props): JSX.Element => {
+  const machine = useMemo(() => createAuthenticatorMachine(options), [options])
   const [authStatus, setAuthStatus] = useState<AuthStatus>('configuring')
 
   // 階層構造にAuthenticatorContextを使用している場合、親Contextの認証状態を継承する
