@@ -7,10 +7,11 @@ import type {
   SignUpOutput,
   UserAttributeKey,
 } from '@aws-amplify/auth'
-import type { AuthAllowedMFATypes } from 'node_modules/@aws-amplify/auth/dist/esm/types'
+import type { AuthVerifiableAttributeKey } from '@aws-amplify/core/internals/utils'
 import type {
-  ActorDoneData,
   AuthEvent,
+  AuthEventData,
+  AuthMFAType,
   AuthTOTPSetupDetails,
   ResetPasswordStep,
   SignInStep,
@@ -24,54 +25,53 @@ type ActionParams<Context = unknown> = {
   event: AuthEvent
 }
 
-export const setTotpSecretCode = ({ event }: ActionParams): string => {
-  const { sharedSecret } = (event.data?.nextStep?.totpSetupDetails ?? {}) as AuthTOTPSetupDetails
+const setTotpSecretCode = ({ event }: ActionParams): string | undefined => {
+  const { sharedSecret } = (event.output?.nextStep?.totpSetupDetails ?? {}) as AuthTOTPSetupDetails
   return sharedSecret
 }
 
-export const setAllowedMfaTypes = ({ event }: ActionParams): AuthAllowedMFATypes | undefined => {
-  return event.data?.nextStep?.allowedMFATypes
+const setAllowedMfaTypes = ({ event }: ActionParams): AuthMFAType[] | undefined => {
+  return event.output?.nextStep?.allowedMFATypes as AuthMFAType[]
 }
 
-export const setSignInStep = (): Step => {
-  return 'SIGN_IN'
+const setSignInStep: Step = 'SIGN_IN'
+
+const setShouldVerifyUserAttributeStep: Step = 'SHOULD_CONFIRM_USER_ATTRIBUTE'
+
+const setConfirmAttributeCompleteStep: Step = 'CONFIRM_ATTRIBUTE_COMPLETE'
+
+const setConfirmSignUpStep: Step = 'CONFIRM_SIGN_UP'
+
+const setNextSignInStep = ({ event }: ActionParams): SignInStep => {
+  const output = (event.output ?? {}) as SignInOutput
+  return output.nextStep?.signInStep === 'DONE' ? 'SIGN_IN_COMPLETE' : output.nextStep?.signInStep
 }
 
-export const setShouldVerifyUserAttributeStep = (): Step => {
-  return 'SHOULD_CONFIRM_USER_ATTRIBUTE'
+const setNextSignUpStep = ({ event }: ActionParams): SignUpStep => {
+  const output = (event.output ?? {}) as SignUpOutput
+  return output.nextStep?.signUpStep === 'DONE' ? 'SIGN_UP_COMPLETE' : output.nextStep?.signUpStep
 }
 
-export const setConfirmAttributeCompleteStep = (): Step => {
-  return 'CONFIRM_ATTRIBUTE_COMPLETE'
+const setNextResetPasswordStep = ({ event }: ActionParams): ResetPasswordStep => {
+  const output = (event.output ?? {}) as ResetPasswordOutput
+  return output.nextStep?.resetPasswordStep === 'DONE' ? 'RESET_PASSWORD_COMPLETE' : output.nextStep?.resetPasswordStep
 }
 
-export const setNextSignInStep = ({ event }: ActionParams): SignInStep => {
-  const data = (event.output ?? {}) as SignInOutput
-  return data.nextStep?.signInStep === 'DONE' ? 'SIGN_IN_COMPLETE' : data.nextStep?.signInStep
-}
+const setMissingAttributes = ({ event }: ActionParams): string | undefined => event.output?.nextStep?.missingAttributes
 
-export const setNextSignUpStep = ({ event }: ActionParams): SignUpStep => {
-  const data = (event.output ?? {}) as SignUpOutput
-  return data.nextStep?.signUpStep === 'DONE' ? 'SIGN_UP_COMPLETE' : data.nextStep?.signUpStep
-}
-
-export const setNextResetPasswordStep = ({ event }: ActionParams): ResetPasswordStep => {
-  const data = (event.output ?? {}) as ResetPasswordOutput
-  return data.nextStep?.resetPasswordStep === 'DONE' ? 'RESET_PASSWORD_COMPLETE' : data.nextStep?.resetPasswordStep
-}
-
-export const setActorDoneData = ({ event }: ActionParams): ActorDoneData => {
-  const data = event.output ?? {}
-  return {
-    missingAttributes: data.missingAttributes,
-    remoteError: data.remoteError,
-    username: data.username,
-    step: data.step,
-    totpSecretCode: data.totpSecretCode,
+const setRemoteError = ({ event }: ActionParams): string => {
+  const error = event.error
+  if (error?.name === 'NoUserPoolError') {
+    return 'Configuration error (see console) – please contact the administrator'
   }
+  return error?.message || String(error)
 }
 
-export const setCodeDeliveryDetails = ({ event }: ActionParams): CodeDeliveryDetails<UserAttributeKey> => {
+const setUsername = ({ event }: ActionParams): string | undefined => event.data?.username
+
+const setUser = ({ event }: ActionParams): AuthEventData | undefined => event.output
+
+const setCodeDeliveryDetails = ({ event }: ActionParams): CodeDeliveryDetails<UserAttributeKey> => {
   const output = event.output
   if (output?.nextStep?.codeDeliveryDetails) {
     return output?.nextStep?.codeDeliveryDetails
@@ -79,7 +79,7 @@ export const setCodeDeliveryDetails = ({ event }: ActionParams): CodeDeliveryDet
   return output as CodeDeliveryDetails<UserAttributeKey>
 }
 
-export const setUnverifiedUserAttributes = ({ event }: ActionParams): UnverifiedUserAttributes => {
+const setUnverifiedUserAttributes = ({ event }: ActionParams): UnverifiedUserAttributes => {
   const { email, phone_number } = event.output as FetchUserAttributesOutput
 
   const unverifiedUserAttributes = {
@@ -90,15 +90,26 @@ export const setUnverifiedUserAttributes = ({ event }: ActionParams): Unverified
   return unverifiedUserAttributes
 }
 
-export const setSelectedUserAttribute = ({ event }: ActionParams): string | undefined => {
+const setSelectedUserAttribute = ({ event }: ActionParams): AuthVerifiableAttributeKey | undefined => {
   const output = event?.output as SendUserAttributeVerificationCodeOutput
   return output?.attributeName
 }
 
-export const setRemoteError = ({ event }: ActionParams): string => {
-  const error = event.error
-  if (error?.name === 'NoUserPoolError') {
-    return 'Configuration error (see console) – please contact the administrator'
-  }
-  return error?.message || String(error)
+export {
+  setAllowedMfaTypes,
+  setCodeDeliveryDetails,
+  setMissingAttributes,
+  setNextResetPasswordStep,
+  setNextSignInStep,
+  setNextSignUpStep,
+  setRemoteError,
+  setConfirmAttributeCompleteStep,
+  setShouldVerifyUserAttributeStep,
+  setSelectedUserAttribute,
+  setSignInStep,
+  setConfirmSignUpStep,
+  setTotpSecretCode,
+  setUsername,
+  setUser,
+  setUnverifiedUserAttributes,
 }

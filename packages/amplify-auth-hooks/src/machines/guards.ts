@@ -10,7 +10,7 @@
  */
 
 import type { FetchUserAttributesOutput, ResetPasswordOutput, SignInOutput, SignUpOutput } from '@aws-amplify/auth'
-import type { AuthEvent, Step } from './types'
+import type { AuthEvent, ResetPasswordContext, Step } from './types'
 
 const SIGN_IN_STEP_MFA_CONFIRMATION: Step[] = ['CONFIRM_SIGN_IN_WITH_SMS_CODE', 'CONFIRM_SIGN_IN_WITH_TOTP_CODE', 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE']
 
@@ -89,16 +89,14 @@ export const shouldSelectMfaType = (step: Step): boolean => {
   return ['CONTINUE_SIGN_IN_WITH_MFA_SELECTION', 'CONTINUE_SIGN_IN_WITH_MFA_SETUP_SELECTION'].includes(step)
 }
 
-export const shouldResetPassword = (step: Step): boolean => {
+export const shouldResetPassword = (context: ResetPasswordContext, event: AuthEvent): boolean => {
+  const step = event?.input?.step ?? context.step
   return step === 'RESET_PASSWORD'
 }
 
-export const shouldConfirmResetPassword = (step: Step): boolean => {
+export const shouldConfirmResetPassword = (context: ResetPasswordContext, event: AuthEvent): boolean => {
+  const step = event?.input?.step ?? context.step
   return step === 'CONFIRM_RESET_PASSWORD_WITH_CODE'
-}
-
-export const shouldConfirmSignUp = (step: Step): boolean => {
-  return step === 'CONFIRM_SIGN_UP'
 }
 
 export const shouldVerifyAttribute = (event: AuthEvent): boolean => {

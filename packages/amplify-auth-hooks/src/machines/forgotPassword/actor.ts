@@ -1,6 +1,6 @@
 import type { ConfirmResetPasswordInput, ResetPasswordInput, ResetPasswordOutput } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setNextResetPasswordStep, setNextSignInStep, setRemoteError } from '../actions'
+import { setCodeDeliveryDetails, setNextResetPasswordStep, setNextSignInStep, setRemoteError, setUsername } from '../actions'
 import { hasCompletedResetPassword, shouldConfirmResetPassword, shouldResetPassword } from '../guards'
 import type { AuthEvent, Handlers, ResetPasswordContext } from '../types'
 
@@ -16,8 +16,8 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
       events: {} as AuthEvent,
     },
     guards: {
-      shouldResetPassword: ({ context, event }) => shouldResetPassword(event?.input?.step ?? context.step),
-      shouldConfirmResetPassword: ({ context, event }) => shouldConfirmResetPassword(event?.input?.step ?? context.step),
+      shouldResetPassword: ({ context, event }) => shouldResetPassword(context, event),
+      shouldConfirmResetPassword: ({ context, event }) => shouldConfirmResetPassword(context, event),
       hasCompletedResetPassword: ({ event }) => hasCompletedResetPassword(event),
     },
     actors: {
@@ -25,37 +25,42 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
       confirmResetPassword: fromPromise<void, ConfirmResetPasswordInput>(({ input }) => handlers.confirmResetPassword(input)),
     },
     actions: {
-      sendParent: sendParent({ type: 'CHILD_CHANGED' }),
+      sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setNextResetPasswordStep: assign({ step: setNextResetPasswordStep }),
-      setRemoteError: assign({ remoteError: setRemoteError }),
       setSignInStep: assign({ step: setNextSignInStep }),
+      setUsername: assign({ username: setUsername }),
+      setRemoteError: assign({ remoteError: setRemoteError }),
+      clearError: assign({ remoteError: undefined }),
     },
   }).createMachine({
     id: 'forgotPasswordActor',
     initial: 'init',
-    context: overridesContext ?? { step: 'FORGOT_PASSWORD' },
+    context: ({ input }) => ({ step: 'FORGOT_PASSWORD', ...overridesContext, ...input }),
     states: {
       init: {
         always: [
-          { guard: 'shouldResetPassword', target: 'confirmResetPassword' },
-          { guard: 'shouldConfirmResetPassword', target: 'confirmResetPassword' },
-          { target: 'forgotPassword' },
+          { guard: 'shouldResetPassword', target: '#forgotPasswordActor.confirmResetPassword' },
+          { guard: 'shouldConfirmResetPassword', target: '#forgotPasswordActor.confirmResetPassword' },
+          { target: '#forgotPasswordActor.forgotPassword' },
         ],
       },
       forgotPassword: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
             },
           },
           submit: {
             tags: 'pending',
+            entry: ['sendUpdate', 'setUsername', 'clearError'],
             invoke: {
               src: 'resetPassword',
-              input: ({ context }) => ({ username: context.username ?? '' }) as ResetPasswordInput,
+              input: ({ context: { username } }) => ({ username }) as ResetPasswordInput,
               onDone: [{ actions: ['setCodeDeliveryDetails', 'setNextResetPasswordStep'], target: '#forgotPasswordActor.confirmResetPassword' }],
               onError: { actions: 'setRemoteError', target: 'idle' },
             },
@@ -64,8 +69,10 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
       },
       confirmResetPassword: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
               RESEND: { target: 'resendCode' },
@@ -73,28 +80,20 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
           },
           resendCode: {
             tags: 'pending',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'resetPassword',
-              input: ({ context }) =>
-                ({
-                  username: context.username ?? '',
-                }) as ResetPasswordInput,
+              input: ({ context: { username } }) => ({ username }) as ResetPasswordInput,
               onDone: { target: 'idle' },
               onError: { actions: 'setRemoteError', target: 'idle' },
             },
           },
           submit: {
             tags: 'pending',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmResetPassword',
-              input: ({ context, event }) => {
-                const data = event.data ?? {}
-                return {
-                  username: context.username,
-                  confirmationCode: data.confirmationCode,
-                  newPassword: data.newPassword,
-                } as ConfirmResetPasswordInput
-              },
+              input: ({ context, event }) => ({ username: context.username, ...event.data }) as ConfirmResetPasswordInput,
               onDone: [
                 { guard: 'hasCompletedResetPassword', actions: 'setNextResetPasswordStep', target: '#forgotPasswordActor.resolved' },
                 { actions: 'setSignInStep', target: '#forgotPasswordActor.resolved' },
@@ -106,5 +105,6 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
       },
       resolved: { type: 'final' },
     },
+    output: ({ context }) => context,
   })
 }

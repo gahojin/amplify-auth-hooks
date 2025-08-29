@@ -90,7 +90,6 @@ export type AuthContext = {
   }
   // data returned from actors when they finish and reach their final state
   actorDoneData?: ActorDoneData
-  hasSetup?: boolean
 }
 
 export type InitialStep = 'FORGOT_PASSWORD' | 'SIGN_IN' | 'SIGN_UP'
@@ -164,4 +163,9 @@ export type Handlers = {
 export type UnverifiedUserAttributes = {
   email?: string
   phone_number?: string
+}
+
+export type AuthError = Error & {
+  __type: string
+  message?: string
 }

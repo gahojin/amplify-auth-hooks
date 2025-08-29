@@ -1,5 +1,4 @@
 import type { ConfirmSignInOutput, FetchUserAttributesOutput, ResendSignUpCodeOutput, ResetPasswordOutput, SignInOutput } from '@aws-amplify/auth'
-import { createTestModel } from '@xstate/graph'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
 import { signInActor } from './actor'
@@ -20,7 +19,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }), { parent: vi.fn()})
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -39,7 +42,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -66,7 +73,7 @@ describe('signInActor', () => {
           user: { username: mockUsername, userId: 'userId' },
           step: 'SIGN_IN',
         },
-      ),{parent: }
+      ).provide({ actions: { sendUpdate: vi.fn() } }),
     )
     actor.start()
 
@@ -81,6 +88,8 @@ describe('signInActor', () => {
       step: 'SHOULD_CONFIRM_USER_ATTRIBUTE',
       unverifiedUserAttributes: { email: mockEmail },
       user: { userId: 'userId', username: mockUsername },
+      remoteError: undefined,
+      username: mockUsername,
     })
   })
 
@@ -92,7 +101,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -119,7 +132,7 @@ describe('signInActor', () => {
           user: { username: mockUsername, userId: 'userId' },
           step: 'SIGN_IN',
         },
-      ),
+      ).provide({ actions: { sendUpdate: vi.fn() } }),
     )
     actor.start()
 
@@ -134,6 +147,8 @@ describe('signInActor', () => {
       step: 'SHOULD_CONFIRM_USER_ATTRIBUTE',
       unverifiedUserAttributes: { email: mockEmail },
       user: { userId: 'userId', username: mockUsername },
+      remoteError: undefined,
+      username: mockUsername,
     })
   })
 
@@ -147,7 +162,11 @@ describe('signInActor', () => {
       const resendSignUpCode = vi.fn().mockResolvedValue({})
       const resetPassword = vi.fn().mockResolvedValue({})
 
-      const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+      const actor = createActor(
+        signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+          actions: { sendUpdate: vi.fn() },
+        }),
+      )
       actor.start()
 
       expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -172,7 +191,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -196,7 +219,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -220,7 +247,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({ nextStep: { resetPasswordStep: 'CONFIRM_RESET_PASSWORD_WITH_CODE' } } as ResetPasswordOutput)
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -231,6 +262,8 @@ describe('signInActor', () => {
     expect(actor.getSnapshot().context).toStrictEqual({
       codeDeliveryDetails: { nextStep: { resetPasswordStep: 'CONFIRM_RESET_PASSWORD_WITH_CODE' } },
       step: 'RESET_PASSWORD',
+      remoteError: undefined,
+      username: mockUsername,
     })
   })
 
@@ -242,7 +275,11 @@ describe('signInActor', () => {
     const resendSignUpCode = vi.fn().mockResolvedValue({ attributeName: 'email' } as ResendSignUpCodeOutput)
     const resetPassword = vi.fn().mockResolvedValue({})
 
-    const actor = createActor(signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }))
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
+    )
     actor.start()
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
@@ -253,6 +290,8 @@ describe('signInActor', () => {
     expect(actor.getSnapshot().context).toStrictEqual({
       codeDeliveryDetails: { attributeName: 'email' },
       step: 'CONFIRM_SIGN_UP',
+      remoteError: undefined,
+      username: mockUsername,
     })
   })
 })

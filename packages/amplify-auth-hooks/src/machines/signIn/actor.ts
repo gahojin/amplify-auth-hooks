@@ -11,14 +11,15 @@ import type {
 } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
 import {
-  setActorDoneData,
   setAllowedMfaTypes,
   setCodeDeliveryDetails,
+  setConfirmSignUpStep,
   setNextSignInStep,
   setRemoteError,
   setShouldVerifyUserAttributeStep,
   setTotpSecretCode,
   setUnverifiedUserAttributes,
+  setUsername,
 } from '../actions'
 import {
   hasCompletedSignIn,
@@ -66,7 +67,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       signInWithRedirect: fromPromise<void, SignInWithRedirectInput>(({ input }) => handlers.signInWithRedirect(input)),
     },
     actions: {
-      sendParent: sendParent({ type: 'CHILD_CHANGED' }),
+      sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
       setShouldVerifyUserAttributeStep: assign({ step: setShouldVerifyUserAttributeStep }),
       setUnverifiedUserAttributes: assign({ unverifiedUserAttributes: setUnverifiedUserAttributes }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
@@ -74,12 +75,27 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       setTotpSecretCode: assign({ totpSecretCode: setTotpSecretCode }),
       setAllowedMfaTypes: assign({ allowedMfaTypes: setAllowedMfaTypes }),
       setNextSignInStep: assign({ step: setNextSignInStep }),
-      setActorDoneData: assign((input) => setActorDoneData(input)),
+      setConfirmSignUpStep: assign({ step: setConfirmSignUpStep }),
+      setActorDoneData: assign(({ event }) => {
+        const output = event?.output ?? {}
+        return {
+          codeDeliveryDetails: output.codeDeliveryDetails,
+          missingAttributes: output.missingAttributes,
+          remoteError: output.remoteError,
+          username: output.username,
+          step: output.step,
+          totpSecretCode: output.totpSecretCode,
+          unverifiedUserAttributes: output.unverifiedUserAttributes,
+          allowedMfaTypes: output.allowedMfaTypes,
+        }
+      }),
+      setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
+      clearError: assign({ remoteError: undefined }),
     },
   }).createMachine({
     id: 'signInActor',
-    context: overridesContext ?? { step: 'SIGN_IN' },
+    context: ({ input }) => ({ step: 'SIGN_IN', ...overridesContext, ...input }),
     initial: 'init',
     states: {
       init: {
@@ -93,6 +109,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
         ],
       },
       federatedSignIn: {
+        entry: ['sendUpdate', 'clearError'],
         invoke: {
           src: 'signInWithRedirect',
           input: ({ event }) => event.data as SignInWithRedirectInput,
@@ -118,7 +135,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
         tags: 'pending',
         invoke: {
           src: 'resendSignUpCode',
-          input: ({ event }) => ({ username: event.data?.username ?? '' }),
+          input: ({ context: { username }, event }) => ({ username, ...event.data }) as ResendSignUpCodeInput,
           onDone: { actions: 'setCodeDeliveryDetails', target: '#signInActor.resolved' },
           onError: { actions: 'setRemoteError', target: '#signInActor.signIn' },
         },
@@ -126,16 +143,16 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       resetPassword: {
         invoke: {
           src: 'resetPassword',
-          input: ({ event }) => event.data as ResetPasswordInput,
+          input: ({ context: { username }, event }) => ({ username, ...event.data }) as ResetPasswordInput,
           onDone: { actions: 'setCodeDeliveryDetails', target: '#signInActor.resolved' },
-          onError: { actions: ['setRemoteError', 'sendParent'] },
+          onError: { actions: ['setRemoteError', 'sendUpdate'] },
         },
       },
       signIn: {
         initial: 'idle',
         states: {
           idle: {
-            entry: 'sendParent',
+            entry: 'sendUpdate',
             on: {
               FEDERATED_SIGN_IN: { target: '#signInActor.federatedSignIn' },
               SUBMIT: { target: 'submit' },
@@ -143,7 +160,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           },
           submit: {
             tags: 'pending',
-            entry: 'sendParent',
+            entry: ['sendUpdate', 'setUsername', 'clearError'],
             invoke: {
               src: 'signIn',
               input: ({ event }) => event.data as SignInInput,
@@ -154,16 +171,20 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
                 { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
                 { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
               ],
-              onError: { actions: 'setRemoteError', target: 'idle' },
+              onError: [
+                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setConfirmSignUpStep', target: '#signInActor.resendSignUpCode' },
+                { actions: 'setRemoteError', target: 'idle' },
+              ],
             },
           },
         },
       },
       confirmSignIn: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
-            entry: 'sendParent',
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
               SIGN_IN: { target: '#signInActor.signIn' },
@@ -171,7 +192,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           },
           submit: {
             tags: 'pending',
-            entry: 'sendParent',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmSignIn',
               input: ({ event }) => event.data as ConfirmSignInInput,
@@ -189,14 +210,16 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       },
       forceChangePassword: {
         initial: 'idle',
+        entry: 'clearError',
+        exit: 'clearError',
         states: {
           idle: {
-            entry: 'sendParent',
+            entry: 'sendUpdate',
             on: { SUBMIT: { target: 'submit' } },
           },
           submit: {
             tags: 'pending',
-            entry: 'sendParent',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmSignIn',
               input: ({ event }) => event.data as ConfirmSignInInput,
@@ -214,9 +237,10 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       },
       setupTotp: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
-            entry: 'sendParent',
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
               SIGN_IN: { target: '#signInActor.signIn' },
@@ -224,7 +248,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           },
           submit: {
             tags: 'pending',
-            entry: 'sendParent',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmSignIn',
               input: ({ event }) => event.data as ConfirmSignInInput,
@@ -242,9 +266,10 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       },
       setupEmail: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
-            entry: 'sendParent',
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
               SIGN_IN: { target: '#signInActor.signIn' },
@@ -252,7 +277,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           },
           submit: {
             tags: 'pending',
-            entry: 'sendParent',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmSignIn',
               input: ({ event }) => event.data as ConfirmSignInInput,
@@ -270,9 +295,10 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       },
       selectMfaType: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
-            entry: 'sendParent',
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
               SIGN_IN: { target: '#signInActor.signIn' },
@@ -280,7 +306,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           },
           submit: {
             tags: 'pending',
-            entry: 'sendParent',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmSignIn',
               input: ({ event }) => event.data as ConfirmSignInInput,

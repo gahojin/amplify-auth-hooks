@@ -21,7 +21,9 @@ describe('signUpActor', () => {
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'DONE' }, isSignUpComplete: true } as SignUpOutput)
 
     const actor = createActor(
-      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }),
+      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
     )
     actor.start()
 
@@ -43,7 +45,9 @@ describe('signUpActor', () => {
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'CONFIRM_SIGN_UP' } } as SignUpOutput)
 
     const actor = createActor(
-      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }),
+      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
     )
     actor.start()
 
@@ -55,10 +59,10 @@ describe('signUpActor', () => {
     expect(signUp).toHaveBeenCalledWith({ email: mockEmail, password: mockPassword, username: mockUsername })
 
     // コード入力
-    actor.send({ type: 'SUBMIT', data: { username: mockUsername, ConfirmationCode: mockConfirmationCode } })
+    actor.send({ type: 'SUBMIT', data: { confirmationCode: mockConfirmationCode } })
     await flushPromises()
-    expect(actor.getSnapshot().value).toStrictEqual({ signUp: 'idle' })
-    expect(confirmSignUp).toHaveBeenCalledWith({ username: mockUsername, ConfirmationCode: mockConfirmationCode })
+    expect(actor.getSnapshot().value).toStrictEqual('resolved')
+    expect(confirmSignUp).toHaveBeenCalledWith({ username: mockUsername, confirmationCode: mockConfirmationCode })
   })
 
   it('サインアップ後に確認コード再送', async () => {
@@ -71,7 +75,9 @@ describe('signUpActor', () => {
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'CONFIRM_SIGN_UP' } } as SignUpOutput)
 
     const actor = createActor(
-      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }),
+      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
     )
     actor.start()
 
@@ -83,7 +89,7 @@ describe('signUpActor', () => {
     expect(signUp).toHaveBeenCalledWith({ email: mockEmail, password: mockPassword, username: mockUsername })
 
     // コード再送
-    actor.send({ type: 'RESEND', data: { username: mockUsername } })
+    actor.send({ type: 'RESEND', data: {} })
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual({ confirmSignUp: 'idle' })
     expect(resendSignUpCode).toHaveBeenCalledWith({ username: mockUsername })
@@ -99,7 +105,9 @@ describe('signUpActor', () => {
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'CONFIRM_SIGN_UP' } } as SignUpOutput)
 
     const actor = createActor(
-      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }),
+      signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
     )
     actor.start()
 
@@ -110,8 +118,8 @@ describe('signUpActor', () => {
     expect(actor.getSnapshot().value).toStrictEqual({ confirmSignUp: 'idle' })
     expect(signUp).toHaveBeenCalledWith({ email: mockEmail, password: mockPassword, username: mockUsername })
 
-    // コード入力
-    actor.send({ type: 'RESEND', data: { username: mockUsername } })
+    // コード再送
+    actor.send({ type: 'RESEND', data: {} })
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('resolved')
     expect(resendSignUpCode).toHaveBeenCalledWith({ username: mockUsername })

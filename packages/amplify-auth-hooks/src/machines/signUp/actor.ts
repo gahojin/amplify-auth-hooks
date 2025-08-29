@@ -9,15 +9,14 @@ import type {
   SignUpInput,
   SignUpOutput,
 } from '@aws-amplify/auth'
-import { assign, fromPromise, setup } from 'xstate'
-import { setCodeDeliveryDetails, setNextSignUpStep, setRemoteError, setUnverifiedUserAttributes } from '../actions'
+import { assign, fromPromise, sendParent, setup } from 'xstate'
+import { setCodeDeliveryDetails, setNextSignUpStep, setRemoteError, setUnverifiedUserAttributes, setUsername } from '../actions'
 import {
   hasCompletedSignIn,
   hasCompletedSignUp,
   isUserAlreadyConfirmed,
   shouldAutoSignIn,
   shouldConfirmSignInWithNewPassword,
-  shouldConfirmSignUp,
   shouldConfirmSignUpFromSignIn,
   shouldResetPasswordFromSignIn,
   shouldVerifyAttribute,
@@ -32,7 +31,7 @@ type SignUpHandlers = Pick<
 /**
  * @internal
  */
-export const signUpActor = (handlers: SignUpHandlers) => {
+export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpContext) => {
   return setup({
     types: {
       context: {} as SignUpContext,
@@ -44,7 +43,7 @@ export const signUpActor = (handlers: SignUpHandlers) => {
       isUserAlreadyConfirmed: ({ event }) => isUserAlreadyConfirmed(event),
       shouldAutoSignIn: ({ event }) => shouldAutoSignIn(event),
       shouldConfirmSignInWithNewPassword: ({ event }) => shouldConfirmSignInWithNewPassword(event),
-      shouldConfirmSignUp: ({ context: { step } }) => shouldConfirmSignUp(step),
+      shouldConfirmSignUp: ({ context: { step } }) => step === 'CONFIRM_SIGN_UP',
       shouldConfirmSignUpFromSignIn: ({ event }) => shouldConfirmSignUpFromSignIn(event),
       shouldResetPasswordFromSignIn: ({ event }) => shouldResetPasswordFromSignIn(event),
       shouldVerifyAttribute: ({ event }) => shouldVerifyAttribute(event),
@@ -59,16 +58,19 @@ export const signUpActor = (handlers: SignUpHandlers) => {
       signInWithRedirect: fromPromise<void, SignInWithRedirectInput>(({ input }) => handlers.signInWithRedirect(input)),
     },
     actions: {
+      sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
       setShouldVerifyUserAttributeStep: assign({ unverifiedUserAttributes: setUnverifiedUserAttributes }),
       setConfirmAttributeCompleteStep: assign({ step: 'CONFIRM_ATTRIBUTE_COMPLETE' }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
-      setRemoteError: assign({ remoteError: setRemoteError }),
       setNextSignUpStep: assign({ step: setNextSignUpStep }),
+      setUsername: assign({ username: setUsername }),
+      setRemoteError: assign({ remoteError: setRemoteError }),
+      clearError: assign({ remoteError: undefined }),
     },
   }).createMachine({
     id: 'signUpActor',
     initial: 'init',
-    context: { step: 'SIGN_UP' },
+    context: ({ input }) => ({ step: 'SIGN_UP', ...overridesContext, ...input }),
     states: {
       init: {
         always: [{ guard: 'shouldConfirmSignUp', target: 'confirmSignUp' }, { target: '#signUpActor.signUp' }],
@@ -102,6 +104,7 @@ export const signUpActor = (handlers: SignUpHandlers) => {
         },
       },
       federatedSignIn: {
+        entry: ['sendUpdate', 'clearError'],
         invoke: {
           src: 'signInWithRedirect',
           input: ({ event }) => event.data as SignInWithRedirectInput,
@@ -119,27 +122,31 @@ export const signUpActor = (handlers: SignUpHandlers) => {
       },
       resendSignUpCode: {
         tags: 'pending',
+        entry: 'sendUpdate',
+        exit: 'sendUpdate',
         invoke: {
           src: 'resendSignUpCode',
-          input: ({ event }) => ({ username: event.data?.username ?? '' }),
+          input: ({ context: { username }, event }) => ({ username, ...event.data }) as ResendSignUpCodeInput,
           onDone: { actions: 'setCodeDeliveryDetails', target: '#signUpActor.confirmSignUp' },
           onError: [{ guard: 'isUserAlreadyConfirmed', target: '#signUpActor.resolved' }, { actions: 'setRemoteError' }],
         },
       },
       signUp: {
-        tags: 'pending',
         initial: 'idle',
+        exit: 'clearError',
         on: {
           FEDERATED_SIGN_IN: { target: '#signUpActor.federatedSignIn' },
         },
         states: {
           idle: {
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
             },
           },
           submit: {
             tags: 'pending',
+            entry: ['sendUpdate', 'setUsername', 'clearError'],
             invoke: {
               src: 'signUp',
               input: ({ event }) => event.data as SignUpInput,
@@ -155,8 +162,10 @@ export const signUpActor = (handlers: SignUpHandlers) => {
       },
       confirmSignUp: {
         initial: 'idle',
+        exit: 'clearError',
         states: {
           idle: {
+            entry: 'sendUpdate',
             on: {
               SUBMIT: { target: 'submit' },
               RESEND: { target: '#signUpActor.resendSignUpCode' },
@@ -164,10 +173,12 @@ export const signUpActor = (handlers: SignUpHandlers) => {
           },
           submit: {
             tags: 'pending',
+            entry: ['sendUpdate', 'clearError'],
             invoke: {
               src: 'confirmSignUp',
-              input: ({ event }) => event.data as ConfirmSignUpInput,
+              input: ({ context: { username }, event }) => ({ username, ...event.data }) as ConfirmSignUpInput,
               onDone: [
+                { guard: 'hasCompletedSignUp', actions: 'setNextSignUpStep', target: '#signUpActor.resolved' },
                 { guard: 'shouldAutoSignIn', actions: 'setNextSignUpStep', target: '#signUpActor.autoSignIn' },
                 { actions: 'setNextSignUpStep', target: '#signUpActor.init' },
               ],

@@ -33,6 +33,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     },
     guards: {
       hasCompletedAttributeConfirmation: ({ event: { output } }) => hasCompletedAttributeConfirmation(output?.step),
+      hasUser: ({ context }) => !!context.user,
       isInitialStateSignUp: ({ context }) => context.config?.initialState === 'signUp',
       isInitialStateResetPassword: ({ context }) => context.config?.initialState === 'forgotPassword',
       isConfirmSignUpStep: ({ event: { output } }) => isConfirmSignUpStep(output?.step),
@@ -53,7 +54,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
       clearUser: assign({ user: undefined }),
       forwardToActor: forwardTo('childActor'),
       setUser: assign({ user: ({ event }) => event.output as AuthUser }),
-      setActorDoneData: assign(({ event }) => ({ actorDoneData: event.output as ActorDoneData })),
+      setActorDoneData: assign({ actorDoneData: ({ event }) => event.output as ActorDoneData }),
     },
   }).createMachine({
     id: 'authenticator',
@@ -61,7 +62,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     context: {
       config,
       user: undefined,
-      hasSetup: false,
     },
     states: {
       idle: {
@@ -76,6 +76,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         states: {
           init: {
             always: [
+              { guard: 'hasUser', target: '#authenticator.authenticated' },
               { guard: 'isInitialStateSignUp', target: '#authenticator.signUpActor' },
               { guard: 'isInitialStateResetPassword', target: '#authenticator.forgotPasswordActor' },
               { target: '#authenticator.signInActor' },
@@ -86,7 +87,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
       getCurrentUser: {
         invoke: {
           src: 'getCurrentUser',
-          onDone: { actions: 'setUser', target: 'authenticated' },
+          onDone: { actions: 'setUser', target: '#authenticator.authenticated' },
           onError: { target: 'setup' },
         },
       },
@@ -94,7 +95,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         invoke: {
           id: 'childActor',
           src: 'invokeSignInActor',
-          input: ({ context }) => context,
+          input: ({ context }) => context.actorDoneData,
           onDone: [
             { guard: 'hasCompletedAttributeConfirmation', target: '#authenticator.getCurrentUser' },
             { guard: 'isShouldConfirmUserAttributeStep', actions: 'setActorDoneData', target: '#authenticator.verifyUserAttributesActor' },
@@ -102,7 +103,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
             { guard: 'isConfirmSignUpStep', actions: 'setActorDoneData', target: '#authenticator.signUpActor' },
           ],
         },
-        exit: 'clearActorDoneData',
+        entry: 'clearActorDoneData',
         on: {
           FORGOT_PASSWORD: { target: '#authenticator.forgotPasswordActor' },
           SIGN_IN: { target: '#authenticator.signInActor' },
@@ -115,14 +116,14 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         invoke: {
           id: 'childActor',
           src: 'invokeSignUpActor',
+          input: ({ context }) => context.actorDoneData,
           onDone: [
-            { guard: 'hasCompletedAttributeConfirmation', target: '#authenticator.getCurrentUser' },
+            { guard: 'hasCompletedAttributeConfirmation', actions: 'clearActorDoneData', target: '#authenticator.getCurrentUser' },
             { guard: 'isShouldConfirmUserAttributeStep', actions: 'setActorDoneData', target: '#authenticator.verifyUserAttributesActor' },
-            { guard: 'isConfirmUserAttributeStep', target: '#authenticator.verifyUserAttributesActor' },
+            { guard: 'isConfirmUserAttributeStep', actions: 'clearActorDoneData', target: '#authenticator.verifyUserAttributesActor' },
             { actions: 'setActorDoneData', target: '#authenticator.signInActor' },
           ],
         },
-        exit: 'clearActorDoneData',
         on: {
           SIGN_IN: { target: '#authenticator.signInActor' },
           FEDERATED_SIGN_IN: { actions: 'forwardToActor' },
@@ -137,6 +138,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
           input: ({ context }) => context.actorDoneData,
           onDone: { target: '#authenticator.signInActor' },
         },
+        exit: 'clearActorDoneData',
         on: {
           SIGN_IN: { target: '#authenticator.signInActor' },
           RESEND: { actions: 'forwardToActor' },
@@ -147,11 +149,12 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         invoke: {
           id: 'childActor',
           src: 'invokeVerifyUserAttributesActor',
+          input: ({ context }) => context.actorDoneData,
           onDone: { actions: 'setActorDoneData', target: '#authenticator.getCurrentUser' },
         },
-        exit: 'clearActorDoneData',
         on: {
           SKIP: { actions: 'forwardToActor' },
+          RESEND: { actions: 'forwardToActor' },
           SUBMIT: { actions: 'forwardToActor' },
         },
       },

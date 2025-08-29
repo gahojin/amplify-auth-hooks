@@ -103,7 +103,7 @@ describe('authenticator', () => {
   it('サインイン後、認証済みに遷移すること', async () => {
     const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as SignInOutput)
     const fetchUserAttributes = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
-    const getCurrentUser = vi.fn().mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+    const getCurrentUser = vi.fn().mockRejectedValueOnce({})
 
     const handlers = mockHandlers({ signIn, fetchUserAttributes, getCurrentUser })
 
@@ -113,6 +113,8 @@ describe('authenticator', () => {
     expect(actor.getSnapshot().value).toStrictEqual('idle')
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
+
+    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
 
     // サインイン
     actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
@@ -130,7 +132,7 @@ describe('authenticator', () => {
     const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'RESET_PASSWORD' } } as SignInOutput)
     const resetPassword = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
     const fetchUserAttributes = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
-    const getCurrentUser = vi.fn().mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+    const getCurrentUser = vi.fn().mockRejectedValueOnce({})
 
     const handlers = mockHandlers({ signIn, fetchUserAttributes, getCurrentUser, resetPassword })
 
@@ -141,6 +143,8 @@ describe('authenticator', () => {
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
 
+    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+
     // サインイン
     actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
     await flushPromises()
@@ -150,6 +154,7 @@ describe('authenticator', () => {
 
     // パスワード忘れに遷移 / コード送信される
     expect(actor.getSnapshot().value).toStrictEqual('forgotPasswordActor')
+    expect(resetPassword).toBeCalledTimes(1)
 
     // パスワード変更
     actor.send({ type: 'SUBMIT', data: { confirmationCode: mockConfirmationCode, newPassword: mockPassword } })
@@ -158,15 +163,12 @@ describe('authenticator', () => {
 
     // パスワード変更後は、サインインに遷移
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
-
-    // getCurrentUserの値が格納されていること
-    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername } }))
   })
 
   it('サインイン後、トークン更新できること', async () => {
     const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as SignInOutput)
     const fetchUserAttributes = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
-    const getCurrentUser = vi.fn().mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+    const getCurrentUser = vi.fn().mockRejectedValueOnce({})
 
     const handlers = mockHandlers({ signIn, fetchUserAttributes, getCurrentUser })
 
@@ -176,6 +178,8 @@ describe('authenticator', () => {
     expect(actor.getSnapshot().value).toStrictEqual('idle')
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
+
+    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
 
     // サインイン
     actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
@@ -205,7 +209,7 @@ describe('authenticator', () => {
     const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as SignInOutput)
     const resetPassword = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
     const fetchUserAttributes = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
-    const getCurrentUser = vi.fn().mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+    const getCurrentUser = vi.fn().mockRejectedValueOnce({})
 
     const handlers = mockHandlers({ signIn, fetchUserAttributes, getCurrentUser, resetPassword })
 
@@ -215,6 +219,8 @@ describe('authenticator', () => {
     expect(actor.getSnapshot().value).toStrictEqual('idle')
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
+
+    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
 
     // サインイン
     actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })

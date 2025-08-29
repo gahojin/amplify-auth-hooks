@@ -15,13 +15,9 @@ describe('forgotPasswordActor', () => {
     const resetPassword = vi.fn().mockResolvedValue({ nextStep: {}, isPasswordReset: true } as ResetPasswordOutput)
 
     const actor = createActor(
-      forgotPasswordActor(
-        { confirmResetPassword, resetPassword },
-        {
-          username: mockUsername,
-          step: 'FORGOT_PASSWORD',
-        },
-      ),
+      forgotPasswordActor({ confirmResetPassword, resetPassword }, { username: mockUsername, step: 'FORGOT_PASSWORD' }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
     )
     actor.start()
 
@@ -31,11 +27,9 @@ describe('forgotPasswordActor', () => {
     expect(actor.getSnapshot().value).toStrictEqual({ forgotPassword: 'idle' })
 
     // コード送信
-    actor.send({ type: 'SUBMIT' })
+    actor.send({ type: 'SUBMIT', data: { username: mockUsername } })
     await flushPromises()
-    expect(resetPassword).toHaveBeenCalledWith({
-      username: mockUsername,
-    })
+    expect(resetPassword).toHaveBeenCalledWith({ username: mockUsername })
     expect(actor.getSnapshot().value).toStrictEqual({
       confirmResetPassword: 'idle',
     })
@@ -56,13 +50,9 @@ describe('forgotPasswordActor', () => {
     const resetPassword = vi.fn().mockResolvedValue({ nextStep: {}, isPasswordReset: true } as ResetPasswordOutput)
 
     const actor = createActor(
-      forgotPasswordActor(
-        { confirmResetPassword, resetPassword },
-        {
-          username: mockUsername,
-          step: 'FORGOT_PASSWORD',
-        },
-      ),
+      forgotPasswordActor({ confirmResetPassword, resetPassword }, { username: mockUsername, step: 'FORGOT_PASSWORD' }).provide({
+        actions: { sendUpdate: vi.fn() },
+      }),
     )
     actor.start()
 
@@ -72,7 +62,7 @@ describe('forgotPasswordActor', () => {
     expect(actor.getSnapshot().value).toStrictEqual({ forgotPassword: 'idle' })
 
     // コード送信
-    actor.send({ type: 'SUBMIT' })
+    actor.send({ type: 'SUBMIT', data: { username: mockUsername } })
     await flushPromises()
     expect(resetPassword).toHaveBeenCalledWith({
       username: mockUsername,

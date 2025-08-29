@@ -51,8 +51,7 @@ const getRoute = (actor: SnapshotFrom<AuthActor>, childActor: AnyMachineSnapshot
       return 'confirmSignUp'
     case childActor?.matches('confirmSignIn'):
       return 'confirmSignIn'
-    case childActor?.matches('setupTotp.edit'):
-    case childActor?.matches('setupTotp.submit'):
+    case childActor?.matches('setupTotp'):
       return 'setupTotp'
     case childActor?.matches('signIn'):
       return 'signIn'
