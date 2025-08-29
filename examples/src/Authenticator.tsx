@@ -1,14 +1,54 @@
 import { AuthenticatorProvider, useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
+import ConfirmResetPassword from './components/ConfirmResetPassword'
+import ConfirmSignIn from './components/ConfirmSignIn'
+import ConfirmSignUp from './components/ConfirmSignUp'
+import ConfirmVerifyUser from './components/ConfirmVerifyUser'
+import ForceNewPassword from './components/ForceNewPassword'
+import ForgotPassword from './components/ForgotPassword'
+import SetupTotp from './components/SetupTotp'
 import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
+import VerifyUser from './components/VerifyUser'
+import Example from './Example'
 
 const Router = () => {
-  const { route, errorMessage } = useAuthenticator(({ route }) => [route])
+  const { route } = useAuthenticator(({ route }) => [route])
 
   switch (route) {
+    case 'authenticated':
+    case 'idle':
+    case 'setup':
+    case 'transition':
+    case 'signOut':
+      return <Example />
+    case 'confirmSignUp':
+      return <ConfirmSignUp />
+    case 'confirmSignIn':
+      return <ConfirmSignIn />
+    case 'selectMfaType':
+      //   return <SelectMfaType />
+      return <>{route}</>
+    case 'setupEmail':
+      //   return <SetupEmail />
+      return <>{route}</>
+    case 'setupTotp':
+      return <SetupTotp />
     case 'signIn':
       return <SignIn />
+    case 'signUp':
+      return <SignUp />
+    case 'forceNewPassword':
+      return <ForceNewPassword />
+    case 'forgotPassword':
+      return <ForgotPassword />
+    case 'confirmResetPassword':
+      return <ConfirmResetPassword />
+    case 'verifyUser':
+      return <VerifyUser />
+    case 'confirmVerifyUser':
+      return <ConfirmVerifyUser />
     default:
-      return null
+      return <>{route}</>
   }
 }
 

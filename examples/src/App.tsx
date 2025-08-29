@@ -1,8 +1,6 @@
 import { Amplify } from 'aws-amplify'
 import Authenticator from './Authenticator'
 
-const _redirectUrl = process.env.VITE_COGNITO_REDIRECT_URL ?? ''
-
 Amplify.configure({
   Auth: {
     Cognito: {

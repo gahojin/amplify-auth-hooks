@@ -2,10 +2,9 @@ import { useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
 import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
-const SignIn = () => {
+const ForgotPassword = () => {
   const { isPending, handleSubmit, setRoute } = useAuthenticator(({ isPending }) => [isPending])
   const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   return (
     <form>
@@ -13,17 +12,11 @@ const SignIn = () => {
         <label>
           username: <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />
         </label>
-        <label>
-          password: <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
-        </label>
-        <button type="button" onClick={() => handleSubmit({ username, password })} disabled={isPending}>
+        <button type="button" onClick={() => handleSubmit({ username })} disabled={isPending}>
+          send
+        </button>
+        <button type="button" onClick={() => setRoute('signIn')} disabled={isPending}>
           signIn
-        </button>
-        <button type="button" onClick={() => setRoute('signUp')} disabled={isPending}>
-          signUp
-        </button>
-        <button type="button" onClick={() => setRoute('forgotPassword')} disabled={isPending}>
-          forgotPassword
         </button>
         <ErrorMessage />
       </div>
@@ -31,4 +24,4 @@ const SignIn = () => {
   )
 }
 
-export default SignIn
+export default ForgotPassword

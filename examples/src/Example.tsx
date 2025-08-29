@@ -1,7 +1,13 @@
 import { useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
 
 const Example = () => {
-  const { isPending, user, errorMessage, route } = useAuthenticator()
+  const { isPending, user, errorMessage, route, setRoute } = useAuthenticator(({ isPending, user, errorMessage, route, setRoute }) => [
+    isPending,
+    user,
+    errorMessage,
+    route,
+    setRoute,
+  ])
 
   return (
     <div>
@@ -14,6 +20,10 @@ const Example = () => {
           UserId: {user?.userId}
           <br />
           Error: {errorMessage}
+          <br />
+          <button type="button" onClick={() => setRoute('signOut')}>
+            SignOut
+          </button>
         </p>
       )}
     </div>
