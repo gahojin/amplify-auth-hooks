@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    groups:
+      all:
+        patterns:
+          - "*"
+    ignore:
+      # git-auto-commit-action v6は壊れているようなので、一旦無視
+      - dependency-name: "stefanzweifel/git-auto-commit-action"
+        update-types: ["version-update:semver-major"]
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    groups:
+      all:
+        patterns:
+          - "*"
+    schedule:
+      interval: "weekly"
+      day: sunday
