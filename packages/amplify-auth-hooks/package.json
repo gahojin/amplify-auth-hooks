@@ -1,0 +1,74 @@
+{
+  "name": "@gahojin-inc/amplify-auth-hooks",
+  "version": "2025.8.0",
+  "description": "Hooks for Amplify Auth",
+  "author": "GAHOJIN, Inc.",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gahojin/amplify-auth-hooks.git",
+    "directory": "packages/amplify-auth-hooks"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.*"
+  ],
+  "keywords": [
+    "amplify",
+    "react"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./machines": {
+      "types": "./dist/machines.d.mts",
+      "import": "./dist/machines.mjs"
+    },
+    "./authenticator": {
+      "types": "./dist/authenticator.d.mts",
+      "import": "./dist/authenticator.mjs"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist .turbo *.log",
+    "prebuild": "rimraf dist",
+    "build": "rolldown -c",
+    "prepublish": "pnpm run build",
+    "lint": "biome check --write src",
+    "check": "tsc --noEmit",
+    "check:packagejson": "attw --pack .",
+    "test": "vitest --watch",
+    "test:unit": "vitest --passWithNoTests --run --coverage",
+    "storybook": "storybook dev -h 127.0.0.1 -p 6006"
+  },
+  "dependencies": {
+    "@aws-amplify/auth": "6.15.0",
+    "@aws-amplify/core": "6.13.1",
+    "@xstate/react": "6.0.0",
+    "xstate": "5.20.2"
+  },
+  "devDependencies": {
+    "@testing-library/react": "16.3.0",
+    "jsdom": "26.1.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "peerDependencies": {
+    "@aws-amplify/auth": "^6",
+    "@aws-amplify/core": "^6",
+    "@xstate/react": "^6",
+    "react": "^18 || ^19",
+    "xstate": "^5"
+  }
+}

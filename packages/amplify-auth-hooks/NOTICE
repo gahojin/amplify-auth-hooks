@@ -1,0 +1,15 @@
+amplify-auth-hooks
+Copyright 2025 GAHOJIN, Inc.
+
+This product includes software developed at GAHOJIN, Inc. (https://gahojin.co.jp/).
+
+--------------------------------------------------------------------------------
+This product includes code from Amplify for UI, which includes the following in
+its NOTICE file:
+
+  Amplify for UI (https://github.com/aws-amplify/amplify-ui/)
+  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+  This product includes software developed at Amazon.com, Inc. or its affiliates.
+
+--------------------------------------------------------------------------------

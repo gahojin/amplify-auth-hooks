@@ -1,0 +1,23 @@
+{
+  "name": "exampels",
+  "license": "Apache-2.0",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf dist .turbo *.log",
+    "start": "vite serve",
+    "lint": "biome check --write src",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gahojin-inc/amplify-auth-hooks": "link:../packages/amplify-auth-hooks",
+    "aws-amplify": "6.15.5",
+    "qrcode.react": "4.2.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "vite": "7.1.3"
+  }
+}
