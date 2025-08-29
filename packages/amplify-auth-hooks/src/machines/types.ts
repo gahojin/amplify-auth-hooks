@@ -38,7 +38,7 @@ export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
 /**
  * Authenticator routes that can be directly navigated to by user interaction.
  */
-export type NavigableRoute = 'signIn' | 'signUp' | 'forgotPassword'
+export type NavigableRoute = 'signIn' | 'signUp' | 'forgotPassword' | 'signOut'
 export type InitialRoute = 'signIn' | 'signUp' | 'forgotPassword'
 
 export type AuthTOTPSetupDetails = {

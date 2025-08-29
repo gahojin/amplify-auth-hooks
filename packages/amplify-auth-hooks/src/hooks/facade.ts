@@ -7,6 +7,7 @@ const NAVIGABLE_ROUTE_EVENT: Record<NavigableRoute, AuthEventTypes> = {
   forgotPassword: 'FORGOT_PASSWORD',
   signIn: 'SIGN_IN',
   signUp: 'SIGN_UP',
+  signOut: 'SIGN_OUT',
 }
 
 export const getSendEventAliases = (send: (event: AuthEvent) => void): AuthenticatorSendEventAliases => {
