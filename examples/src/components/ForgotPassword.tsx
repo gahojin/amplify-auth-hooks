@@ -8,6 +8,8 @@ const ForgotPassword = () => {
 
   return (
     <form>
+      {/* enterによる処理を防止 */}
+      <input type="text" style={{ display: 'none' }} />
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
         <label>
           username: <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />

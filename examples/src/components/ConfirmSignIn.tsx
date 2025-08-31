@@ -3,7 +3,7 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const ConfirmSignIn = () => {
-  const { isPending, handleSubmit, username, codeDeliveryDetails } = useAuthenticator(({ isPending, username, codeDeliveryDetails }) => [
+  const { isPending, username, codeDeliveryDetails, handleSubmit, setRoute } = useAuthenticator(({ isPending, username, codeDeliveryDetails }) => [
     isPending,
     username,
     codeDeliveryDetails,
@@ -12,6 +12,8 @@ const ConfirmSignIn = () => {
 
   return (
     <form>
+      {/* enterによる処理を防止 */}
+      <input type="text" style={{ display: 'none' }} />
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
         <p>code delivery: {codeDeliveryDetails?.deliveryMedium}</p>
         <p>username: {username}</p>
@@ -27,6 +29,9 @@ const ConfirmSignIn = () => {
         </label>
         <button type="button" onClick={() => handleSubmit({ challengeResponse: confirmationCode })} disabled={isPending}>
           confirm
+        </button>
+        <button type="button" onClick={() => setRoute('signIn')} disabled={isPending}>
+          signIn
         </button>
         <ErrorMessage />
       </div>
