@@ -179,7 +179,7 @@ describe('authenticator', () => {
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
 
-    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+    getCurrentUser.mockResolvedValue({ userId: mockUsername, username: mockUsername } satisfies GetCurrentUserOutput)
 
     // サインイン
     actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
@@ -191,9 +191,9 @@ describe('authenticator', () => {
     expect(getCurrentUser).toHaveBeenCalledTimes(2)
 
     // getCurrentUserの値が格納されていること
-    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername } }))
+    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername, username: mockUsername } }))
 
-    getCurrentUser.mockResolvedValueOnce({ userId: mockUsername, token: 'newToken' })
+    getCurrentUser.mockResolvedValueOnce({ userId: mockUsername, username: mockUsername } satisfies GetCurrentUserOutput)
 
     // トークン更新
     actor.send({ type: 'TOKEN_REFRESH' })
@@ -202,7 +202,7 @@ describe('authenticator', () => {
     expect(getCurrentUser).toHaveBeenCalledTimes(3)
 
     // getCurrentUserの値が格納されていること
-    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername, token: 'newToken' } }))
+    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername, username: mockUsername } }))
   })
 
   it('サインアウトに遷移すること', async () => {
