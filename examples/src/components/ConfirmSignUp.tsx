@@ -12,6 +12,8 @@ const ConfirmSignUp = () => {
 
   return (
     <form>
+      {/* enterによる処理を防止 */}
+      <input type="text" style={{ display: 'none' }} />
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
         <p>code delivery: {codeDeliveryDetails?.deliveryMedium}</p>
         <p>username: {username}</p>
