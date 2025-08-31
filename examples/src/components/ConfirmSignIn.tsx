@@ -3,7 +3,7 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const ConfirmSignIn = () => {
-  const { isPending, handleSubmit, username, codeDeliveryDetails } = useAuthenticator(({ isPending, username, codeDeliveryDetails }) => [
+  const { isPending, username, codeDeliveryDetails, handleSubmit, setRoute } = useAuthenticator(({ isPending, username, codeDeliveryDetails }) => [
     isPending,
     username,
     codeDeliveryDetails,
@@ -29,6 +29,9 @@ const ConfirmSignIn = () => {
         </label>
         <button type="button" onClick={() => handleSubmit({ challengeResponse: confirmationCode })} disabled={isPending}>
           confirm
+        </button>
+        <button type="button" onClick={() => setRoute('signIn')} disabled={isPending}>
+          signIn
         </button>
         <ErrorMessage />
       </div>
