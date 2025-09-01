@@ -41,11 +41,12 @@ export type AuthenticatorServiceContextFacade = {
 }
 
 export type AuthenticatorSendEventAliases = {
-  toFederatedSignIn: (data?: AuthEventData) => void
   handleSubmit: (data?: AuthEventData) => void
   resendConfirmationCode: () => void
+  refreshUser: () => void
   setRoute: (route: NavigableRoute) => void
   skipAttributeVerification: () => void
+  toFederatedSignIn: (data?: AuthEventData) => void
 }
 
 export type AuthenticatorServiceFacade = AuthenticatorSendEventAliases & AuthenticatorServiceContextFacade
