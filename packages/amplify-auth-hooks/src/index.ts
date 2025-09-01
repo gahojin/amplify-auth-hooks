@@ -1,4 +1,4 @@
-export { AuthenticatorContext, AuthenticatorProvider, type AuthStatus } from './context'
+export { AuthenticatorContext, AuthenticatorProvider } from './context'
 export type * from './hooks/types'
 export { type UseAuthResult, useAuth } from './hooks/useAuth'
 export { useAuthenticator } from './hooks/useAuthenticator'
