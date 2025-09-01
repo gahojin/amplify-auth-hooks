@@ -21,6 +21,7 @@ const Router = () => {
     case 'setup':
     case 'transition':
     case 'signOut':
+    case 'unauthenticated':
       return <Example />
     case 'confirmSignUp':
       return <ConfirmSignUp />

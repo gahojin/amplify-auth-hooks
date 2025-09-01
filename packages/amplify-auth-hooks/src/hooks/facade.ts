@@ -47,6 +47,8 @@ const getRoute = (actor: SnapshotFrom<AuthActor>, childActor: AnyMachineSnapshot
       return 'signOut'
     case actor.matches('authenticated'):
       return 'authenticated'
+    case actor.matches('unauthenticated'):
+      return 'unauthenticated'
     case childActor?.matches('confirmSignUp'):
     case childActor?.matches('resendSignUpCode'):
       return 'confirmSignUp'
