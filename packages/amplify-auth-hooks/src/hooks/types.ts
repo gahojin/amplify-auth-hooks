@@ -1,6 +1,5 @@
 import type { AuthUser, CodeDeliveryDetails } from '@aws-amplify/auth'
-import type { AuthMFAType } from 'node_modules/@aws-amplify/auth/dist/esm/types'
-import type { AuthEventData, NavigableRoute, UnverifiedUserAttributes } from '../machines/types'
+import type { AuthAllowedMFATypes, AuthEventData, NavigableRoute, UnverifiedUserAttributes } from '../machines/types'
 
 export type AuthenticatorRoute =
   | 'authenticated'
@@ -29,7 +28,7 @@ export type UseAuthenticatorSelector = (context: AuthenticatorServiceFacade) => 
 export type UseAuthenticator = AuthenticatorServiceFacade
 
 export type AuthenticatorServiceContextFacade = {
-  allowedMfaTypes: AuthMFAType[] | undefined
+  allowedMfaTypes: AuthAllowedMFATypes | undefined
   codeDeliveryDetails: CodeDeliveryDetails | undefined
   errorMessage: string | undefined
   isPending: boolean

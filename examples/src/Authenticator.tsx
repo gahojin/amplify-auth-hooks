@@ -6,6 +6,8 @@ import ConfirmSignUp from './components/ConfirmSignUp'
 import ConfirmVerifyUser from './components/ConfirmVerifyUser'
 import ForceNewPassword from './components/ForceNewPassword'
 import ForgotPassword from './components/ForgotPassword'
+import SelectMfaType from './components/SelectMfaType'
+import SetupEmail from './components/SetupEmail'
 import SetupTotp from './components/SetupTotp'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
@@ -27,11 +29,9 @@ const Router = () => {
     case 'confirmSignIn':
       return <ConfirmSignIn />
     case 'selectMfaType':
-      //   return <SelectMfaType />
-      return <>{route}</>
+      return <SelectMfaType />
     case 'setupEmail':
-      //   return <SetupEmail />
-      return <>{route}</>
+      return <SetupEmail />
     case 'setupTotp':
       return <SetupTotp />
     case 'signIn':

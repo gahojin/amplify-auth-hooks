@@ -34,6 +34,21 @@ import type { AuthSignInWithRedirectInput, AuthSignOutInput } from 'node_modules
 import type { AuthCodeDeliveryDetails, AutoSignInCallback } from 'node_modules/@aws-amplify/auth/dist/esm/types/models'
 
 export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
+export type AuthAllowedMFATypes = AuthMFAType[]
+
+export const FederatedIdentityProviders = {
+  Apple: 'Apple',
+  Amazon: 'Amazon',
+  Facebook: 'Facebook',
+  Google: 'Google',
+} as const
+export type FederatedIdentityProviders = (typeof FederatedIdentityProviders)[keyof typeof FederatedIdentityProviders]
+
+/**
+ * Cognito user contact method types that have not been verified as valid
+ */
+export const unverifiedContactMethodTypes = ['email', 'phone_number'] as const
+export type UnverifiedContactMethodType = (typeof unverifiedContactMethodTypes)[number]
 
 /**
  * Authenticator routes that can be directly navigated to by user interaction.
@@ -160,10 +175,7 @@ export type Handlers = {
   sendUserAttributeVerificationCode: (input: SendUserAttributeVerificationCodeInput) => Promise<SendUserAttributeVerificationCodeOutput>
 }
 
-export type UnverifiedUserAttributes = {
-  email?: string
-  phone_number?: string
-}
+export type UnverifiedUserAttributes = Partial<Record<UnverifiedContactMethodType, string>>
 
 export type AuthError = Error & {
   __type: string
