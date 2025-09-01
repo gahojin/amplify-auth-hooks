@@ -3,11 +3,9 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const ConfirmSignUp = () => {
-  const { isPending, handleSubmit, username, codeDeliveryDetails } = useAuthenticator(({ isPending, username, codeDeliveryDetails }) => [
-    isPending,
-    username,
-    codeDeliveryDetails,
-  ])
+  const { isPending, username, codeDeliveryDetails, handleSubmit } = useAuthenticator(
+    ({ isPending, username, codeDeliveryDetails, handleSubmit }) => [isPending, username, codeDeliveryDetails, handleSubmit],
+  )
   const [confirmationCode, setConfirmationCode] = useState('')
 
   return (

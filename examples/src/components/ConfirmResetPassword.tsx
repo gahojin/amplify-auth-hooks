@@ -3,7 +3,7 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const ConfirmResetPassword = () => {
-  const { isPending, handleSubmit } = useAuthenticator(({ isPending }) => [isPending])
+  const { isPending, handleSubmit } = useAuthenticator(({ isPending, handleSubmit }) => [isPending, handleSubmit])
   const [confirmationCode, setConfirmationCode] = useState('')
   const [newPassword, setNewPassword] = useState('')
 

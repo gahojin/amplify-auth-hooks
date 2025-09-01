@@ -3,8 +3,8 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const VerifyUser = () => {
-  const { isPending, handleSubmit, skipAttributeVerification, unverifiedUserAttributes } = useAuthenticator(
-    ({ isPending, unverifiedUserAttributes }) => [isPending, unverifiedUserAttributes],
+  const { isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification } = useAuthenticator(
+    ({ isPending, unverifiedUserAttributes }) => [isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification],
   )
 
   const [userAttributeKey, setUserAttributeKey] = useState(() => {

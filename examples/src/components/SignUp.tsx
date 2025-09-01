@@ -3,7 +3,7 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const SignUp = () => {
-  const { isPending, handleSubmit, setRoute } = useAuthenticator(({ isPending }) => [isPending])
+  const { isPending, handleSubmit, setRoute } = useAuthenticator(({ isPending, handleSubmit, setRoute }) => [isPending, handleSubmit, setRoute])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
