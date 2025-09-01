@@ -14,6 +14,7 @@ export const getSendEventAliases = (send: (event: AuthEvent) => void): Authentic
   return {
     handleSubmit: (data) => send({ type: 'SUBMIT', data }),
     resendConfirmationCode: () => send({ type: 'RESEND' }),
+    refreshUser: () => send({ type: 'TOKEN_REFRESH' }),
     setRoute: (route) => send({ type: NAVIGABLE_ROUTE_EVENT[route] }),
     skipAttributeVerification: () => send({ type: 'SKIP' }),
     toFederatedSignIn: () => send({ type: 'FEDERATED_SIGN_IN' }),
