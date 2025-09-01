@@ -35,7 +35,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     guards: {
       hasCompletedAttributeConfirmation: ({ event: { output } }) => hasCompletedAttributeConfirmation(output?.step),
       hasUser: ({ context }) => !!context.user,
-      isInitialStateUnauthenticated: ({ context }) => context.config?.initialState === 'unauthenticated',
       isInitialStateSignUp: ({ context }) => context.config?.initialState === 'signUp',
       isInitialStateResetPassword: ({ context }) => context.config?.initialState === 'forgotPassword',
       isConfirmSignUpStep: ({ event: { output } }) => isConfirmSignUpStep(output?.step),
@@ -79,7 +78,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
           init: {
             always: [
               { guard: 'hasUser', target: '#authenticator.authenticated' },
-              { guard: 'isInitialStateUnauthenticated', target: '#authenticator.unauthenticated' },
               { guard: 'isInitialStateSignUp', target: '#authenticator.signUpActor' },
               { guard: 'isInitialStateResetPassword', target: '#authenticator.forgotPasswordActor' },
               { target: '#authenticator.signInActor' },
@@ -179,13 +177,6 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
               onError: { target: '#authenticator.signOut' },
             },
           },
-        },
-      },
-      unauthenticated: {
-        on: {
-          FORGOT_PASSWORD: { target: '#authenticator.forgotPasswordActor' },
-          SIGN_UP: { target: '#authenticator.signUpActor' },
-          SIGN_IN: { target: '#authenticator.signInActor' },
         },
       },
       signOut: {

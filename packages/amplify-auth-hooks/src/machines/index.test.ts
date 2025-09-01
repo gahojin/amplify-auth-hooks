@@ -239,45 +239,4 @@ describe('authenticator', () => {
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
     expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: undefined }))
   })
-
-  it('未ログイン時にサインイン状態にしない', async () => {
-    const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as SignInOutput)
-    const resetPassword = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
-    const fetchUserAttributes = vi.fn().mockResolvedValue({} as FetchUserAttributesOutput)
-    const getCurrentUser = vi.fn().mockRejectedValueOnce({})
-
-    const handlers = mockHandlers({ signIn, fetchUserAttributes, getCurrentUser, resetPassword })
-
-    const actor = createActor(createAuthenticatorMachine({ handlers, initialState: 'unauthenticated' }))
-    actor.start()
-
-    expect(actor.getSnapshot().value).toStrictEqual('idle')
-    await flushPromises()
-
-    expect(actor.getSnapshot().value).toStrictEqual('unauthenticated')
-    await flushPromises()
-
-    actor.send({ type: 'SIGN_IN' })
-    await flushPromises()
-    expect(actor.getSnapshot().value).toStrictEqual('signInActor')
-
-    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
-
-    // サインイン
-    actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
-    await flushPromises()
-
-    expect(actor.getSnapshot().value).toStrictEqual({ authenticated: 'idle' })
-
-    // getCurrentUserの値が格納されていること
-    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername } }))
-
-    // サインアウト
-    actor.send({ type: 'SIGN_OUT' })
-    await flushPromises()
-
-    // ユーザ情報が消えていること
-    expect(actor.getSnapshot().value).toStrictEqual('unauthenticated')
-    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: undefined }))
-  })
 })
