@@ -1,4 +1,5 @@
 import { AuthenticatorProvider, useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
+import { useCallback } from 'react'
 import ConfirmResetPassword from './components/ConfirmResetPassword'
 import ConfirmSignIn from './components/ConfirmSignIn'
 import ConfirmSignUp from './components/ConfirmSignUp'
@@ -53,8 +54,16 @@ const Router = () => {
 }
 
 export default () => {
+  const onSignIn = useCallback(() => {
+    console.log('signIn')
+  }, [])
+
+  const onSignOut = useCallback(() => {
+    console.log('signOut')
+  }, [])
+
   return (
-    <AuthenticatorProvider>
+    <AuthenticatorProvider options={{ onSignIn, onSignOut }}>
       <Router />
     </AuthenticatorProvider>
   )

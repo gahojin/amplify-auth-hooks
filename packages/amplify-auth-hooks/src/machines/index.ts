@@ -1,5 +1,6 @@
 import type { AuthUser } from '@aws-amplify/auth'
 import { assign, forwardTo, fromPromise, setup } from 'xstate'
+import type { AuthMachineHubHandlerOptions } from '../authenticator/types'
 import { signInActor } from '../machines/signIn/actor'
 import { defaultHandlers } from './defaultHandlers'
 import { forgotPasswordActor } from './forgotPassword/actor'
@@ -17,7 +18,7 @@ import { verifyUserAttributesActor } from './verifyUserAttributes/actor'
 
 export type AuthenticatorMachineOptions = AuthContext['config'] & {
   handlers?: Partial<Handlers>
-}
+} & AuthMachineHubHandlerOptions
 
 /**
  * @internal
