@@ -3,7 +3,11 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const ConfirmVerifyUser = () => {
-  const { isPending, handleSubmit, skipAttributeVerification } = useAuthenticator(({ isPending }) => [isPending])
+  const { isPending, handleSubmit, skipAttributeVerification } = useAuthenticator(({ isPending, handleSubmit, skipAttributeVerification }) => [
+    isPending,
+    handleSubmit,
+    skipAttributeVerification,
+  ])
   const [confirmationCode, setConfirmationCode] = useState('')
 
   return (

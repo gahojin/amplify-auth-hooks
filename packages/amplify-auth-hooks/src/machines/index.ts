@@ -164,12 +164,12 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
       authenticated: {
         initial: 'idle',
         on: {
-          SIGN_OUT: 'signOut',
+          SIGN_OUT: { target: '#authenticator.signOut' },
         },
         states: {
           idle: {
             on: {
-              TOKEN_REFRESH: 'refreshUser',
+              TOKEN_REFRESH: { target: 'refreshUser' },
             },
           },
           refreshUser: {

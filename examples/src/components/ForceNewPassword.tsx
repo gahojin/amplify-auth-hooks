@@ -3,7 +3,7 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const ForceNewPassword = () => {
-  const { isPending, handleSubmit } = useAuthenticator(({ isPending }) => [isPending])
+  const { isPending, handleSubmit } = useAuthenticator(({ isPending, handleSubmit }) => [isPending, handleSubmit])
   const [password, setPassword] = useState('')
 
   return (
