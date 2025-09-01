@@ -9,8 +9,8 @@ export type AuthenticatorRoute =
   | 'confirmSignUp'
   | 'confirmVerifyUser'
   | 'forceNewPassword'
-  | 'forgotPassword'
   | 'idle'
+  | 'forgotPassword'
   | 'setup'
   | 'signOut'
   | 'selectMfaType'
@@ -19,7 +19,6 @@ export type AuthenticatorRoute =
   | 'signIn'
   | 'signUp'
   | 'transition'
-  | 'unauthenticated'
   | 'verifyUser'
 
 type AuthenticatorMachineContext = AuthenticatorServiceFacade

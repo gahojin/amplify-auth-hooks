@@ -86,7 +86,7 @@ export type ActorDoneData = {
 export type AuthContext = {
   user?: AuthUser
   config?: {
-    initialState?: 'signIn' | 'signUp' | 'forgotPassword' | 'unauthenticated'
+    initialState?: 'signIn' | 'signUp' | 'forgotPassword'
   }
   // data returned from actors when they finish and reach their final state
   actorDoneData?: ActorDoneData
