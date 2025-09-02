@@ -24,22 +24,19 @@ type Props = {
   getCurrentUser?: Handlers['getCurrentUser']
 }
 
-export const useAuth = ({ getCurrentUser: overrideGetCurrentUser }: Props): UseAuthResult => {
+export const useAuth = (handlers?: Props): UseAuthResult => {
   const [result, setResult] = useState<UseAuthResult>({
     isLoading: true,
   })
 
-  const fetchCurrentUser = useCallback(async () => {
+  const fetchCurrentUser = useCallback(() => {
     // loading
     setResult((prev) => ({ ...prev, isLoading: true }))
 
-    try {
-      const user = await (overrideGetCurrentUser ?? getCurrentUser)()
-      setResult({ user, isLoading: false })
-    } catch (e) {
-      setResult({ error: e as Error, isLoading: false })
-    }
-  }, [overrideGetCurrentUser])
+    void (handlers?.getCurrentUser ?? getCurrentUser)()
+      .then((user) => setResult({ user, isLoading: false }))
+      .catch((e) => setResult({ error: e as Error, isLoading: false }))
+  }, [handlers?.getCurrentUser])
 
   const handleAuth: HubCallback = useCallback(
     ({ payload }) => {
@@ -66,7 +63,7 @@ export const useAuth = ({ getCurrentUser: overrideGetCurrentUser }: Props): UseA
 
         // events that need another fetch
         case 'tokenRefresh':
-          fetchCurrentUser()
+          void fetchCurrentUser()
           break
 
         default:
@@ -79,7 +76,7 @@ export const useAuth = ({ getCurrentUser: overrideGetCurrentUser }: Props): UseA
 
   useEffect(() => {
     const unsubscribe = Hub.listen('auth', handleAuth, 'useAuth')
-    fetchCurrentUser() // on init, see if user is already logged in
+    void fetchCurrentUser() // on init, see if user is already logged in
 
     return unsubscribe
   }, [handleAuth, fetchCurrentUser])
