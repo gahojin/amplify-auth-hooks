@@ -12,6 +12,7 @@
 import { type AuthUser, getCurrentUser } from '@aws-amplify/auth'
 import { Hub, type HubCallback } from '@aws-amplify/core'
 import { useCallback, useEffect, useState } from 'react'
+import type { Handlers } from '../machines/types'
 
 export type UseAuthResult = {
   user?: AuthUser
@@ -19,7 +20,11 @@ export type UseAuthResult = {
   error?: Error
 }
 
-export const useAuth = (): UseAuthResult => {
+type Props = {
+  getCurrentUser?: Handlers['getCurrentUser']
+}
+
+export const useAuth = ({ getCurrentUser: overrideGetCurrentUser }: Props): UseAuthResult => {
   const [result, setResult] = useState<UseAuthResult>({
     isLoading: true,
   })
@@ -29,12 +34,12 @@ export const useAuth = (): UseAuthResult => {
     setResult((prev) => ({ ...prev, isLoading: true }))
 
     try {
-      const user = await getCurrentUser()
+      const user = await (overrideGetCurrentUser ?? getCurrentUser)()
       setResult({ user, isLoading: false })
     } catch (e) {
       setResult({ error: e as Error, isLoading: false })
     }
-  }, [])
+  }, [overrideGetCurrentUser])
 
   const handleAuth: HubCallback = useCallback(
     ({ payload }) => {
