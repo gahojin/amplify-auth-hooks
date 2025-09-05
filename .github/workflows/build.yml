@@ -36,18 +36,18 @@ on:
       - "bumpver.toml"
       - "commitlint.config.cjs"
 
-permissions:
-  contents: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    timeout-minutes: 30
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: contains(github.event.head_commit.message, '[skip build]') == false
+
+    permissions:
+      contents: write
 
     strategy:
       matrix:
@@ -56,6 +56,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
@@ -87,8 +89,8 @@ jobs:
         run: pnpm run test
 
       - name: Commit changes
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+        if: ${{ matrix.node-version == 24 && github.event_name == 'pull_request' }}
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
         with:
           commit_options: "--no-verify --signoff"
           commit_message: "ci: apply formatting changes"
