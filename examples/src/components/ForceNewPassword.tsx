@@ -10,7 +10,15 @@ const ForceNewPassword = () => {
     <form>
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
         <label>
-          password: <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
+          password:
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isPending}
+            autoComplete="new-password"
+          />
         </label>
         <button type="button" onClick={() => handleSubmit({ challengeResponse: password })} disabled={isPending}>
           change

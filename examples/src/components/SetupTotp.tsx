@@ -36,17 +36,38 @@ const SetupTotp = () => {
         <p>totpSecretCode: {totpSecretCode}</p>
         <label>
           issuer:
-          <input type="text" name="totpIssuer" value={totpIssuer} onChange={(e) => setTotpIssuer(e.target.value)} disabled={isPending} />
+          <input
+            type="text"
+            name="totpIssuer"
+            value={totpIssuer}
+            onChange={(e) => setTotpIssuer(e.target.value)}
+            disabled={isPending}
+            autoComplete="off"
+          />
         </label>
         <label>
           username:
-          <input type="text" name="totpUsername" value={totpUsername} onChange={(e) => setTotpUserName(e.target.value)} disabled={isPending} />
+          <input
+            type="text"
+            name="totpUsername"
+            value={totpUsername}
+            onChange={(e) => setTotpUserName(e.target.value)}
+            disabled={isPending}
+            autoComplete="username"
+          />
         </label>
         {qrcode && <QRCodeSVG value={qrcode} />}
 
         <label>
           code:
-          <input type="text" name="code" value={confirmationCode} onChange={(e) => setConfirmationCode(e.target.value)} disabled={isPending} />
+          <input
+            type="text"
+            name="code"
+            value={confirmationCode}
+            onChange={(e) => setConfirmationCode(e.target.value)}
+            disabled={isPending}
+            autoComplete="off"
+          />
         </label>
         <button type="button" onClick={() => handleSubmit({ challengeResponse: confirmationCode })} disabled={isPending}>
           send

@@ -23,11 +23,19 @@ const ConfirmResetPassword = () => {
             value={confirmationCode}
             onChange={(e) => setConfirmationCode(e.target.value)}
             disabled={isPending}
+            autoComplete="off"
           />
         </label>
         <label>
           password:
-          <input type="password" name="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={isPending} />
+          <input
+            type="password"
+            name="newPassword"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            disabled={isPending}
+            autoComplete="new-password"
+          />
         </label>
         <button type="button" onClick={() => handleSubmit({ confirmationCode, newPassword })} disabled={isPending}>
           change

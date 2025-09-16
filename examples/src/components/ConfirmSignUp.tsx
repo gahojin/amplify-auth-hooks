@@ -23,6 +23,7 @@ const ConfirmSignUp = () => {
             value={confirmationCode}
             onChange={(e) => setConfirmationCode(e.target.value)}
             disabled={isPending}
+            autoComplete="off"
           />
         </label>
         <button type="button" onClick={() => handleSubmit({ confirmationCode })} disabled={isPending}>
