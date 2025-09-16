@@ -12,7 +12,7 @@ const SignUp = () => {
     handleSubmit({
       username,
       password,
-      options: autoSignIn ? { autoSignIn: { authFlowType: 'USER_AUTH' } } : {},
+      options: autoSignIn ? { autoSignIn: true } : {},
     })
   }, [handleSubmit, username, password, autoSignIn])
 
