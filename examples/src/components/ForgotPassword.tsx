@@ -12,7 +12,15 @@ const ForgotPassword = () => {
       <input type="text" style={{ display: 'none' }} />
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
         <label>
-          username: <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />
+          username:
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isPending}
+            autoComplete="username"
+          />
         </label>
         <button type="button" onClick={() => handleSubmit({ username })} disabled={isPending}>
           send

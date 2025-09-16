@@ -11,10 +11,26 @@ const SignIn = () => {
     <form>
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
         <label>
-          username: <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />
+          username:
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isPending}
+            autoComplete="username"
+          />
         </label>
         <label>
-          password: <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isPending} />
+          password:
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isPending}
+            autoComplete="current-password"
+          />
         </label>
         <button type="button" onClick={() => handleSubmit({ username, password })} disabled={isPending}>
           signIn
