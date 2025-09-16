@@ -11,6 +11,7 @@
 
 import type {
   AuthUser,
+  CodeDeliveryDetails,
   ConfirmResetPasswordInput,
   ConfirmSignInInput,
   ConfirmSignInOutput,
@@ -26,12 +27,12 @@ import type {
   SendUserAttributeVerificationCodeOutput,
   SignInInput,
   SignInOutput,
+  SignInWithRedirectInput,
+  SignOutInput,
   SignUpInput,
   SignUpOutput,
   UserAttributeKey,
 } from '@aws-amplify/auth'
-import type { AuthSignInWithRedirectInput, AuthSignOutInput } from 'node_modules/@aws-amplify/auth/dist/esm/types'
-import type { AuthCodeDeliveryDetails, AutoSignInCallback } from 'node_modules/@aws-amplify/auth/dist/esm/types/models'
 
 export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
 export type AuthAllowedMFATypes = AuthMFAType[]
@@ -88,7 +89,7 @@ export type AuthEvent = {
 }
 
 export type ActorDoneData = {
-  codeDeliveryDetails?: AuthCodeDeliveryDetails<UserAttributeKey>
+  codeDeliveryDetails?: CodeDeliveryDetails<UserAttributeKey>
   missingAttributes?: string[]
   remoteError?: string
   step: Step
@@ -162,10 +163,10 @@ export type Handlers = {
   getCurrentUser: () => Promise<AuthUser>
   fetchUserAttributes: () => Promise<FetchUserAttributesOutput>
   signIn: (input: SignInInput) => Promise<SignInOutput>
-  signInWithRedirect: (input?: AuthSignInWithRedirectInput) => Promise<void>
+  signInWithRedirect: (input?: SignInWithRedirectInput) => Promise<void>
   signUp: (input: SignUpInput) => Promise<SignUpOutput>
-  signOut: (input?: AuthSignOutInput) => Promise<void>
-  autoSignIn: AutoSignInCallback
+  signOut: (input?: SignOutInput) => Promise<void>
+  autoSignIn: () => Promise<SignInOutput>
   confirmSignIn: (input: ConfirmSignInInput) => Promise<ConfirmSignInOutput>
   confirmSignUp: (input: ConfirmSignUpInput) => Promise<ConfirmSignUpOutput>
   confirmResetPassword: (input: ConfirmResetPasswordInput) => Promise<void>

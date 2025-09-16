@@ -23,7 +23,7 @@ export const defaultHandlers: Handlers = {
   signInWithRedirect,
   signUp,
   signOut,
-  autoSignIn,
+  autoSignIn: () => autoSignIn(),
   confirmSignIn,
   confirmSignUp,
   confirmResetPassword,
