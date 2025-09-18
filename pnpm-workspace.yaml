@@ -10,6 +10,3 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - lefthook
-
-overrides:
-  vite: $vite
