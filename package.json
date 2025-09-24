@@ -27,7 +27,7 @@
     "@storybook/addon-links": "9.1.6",
     "@storybook/addon-vitest": "9.1.6",
     "@storybook/react-vite": "9.1.6",
-    "@types/node": "24.5.0",
+    "@types/node": "24.5.1",
     "@types/react": "19.1.13",
     "@types/react-dom": "19.1.9",
     "@vitejs/plugin-react-swc": "4.0.1",
@@ -42,7 +42,7 @@
     "terser": "5.44.0",
     "turbo": "2.5.6",
     "typescript": "5.9.2",
-    "unplugin-isolated-decl": "0.15.1",
+    "unplugin-isolated-decl": "0.15.2",
     "vite": "7.1.5",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.4"
