@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@gahojin-inc/amplify-auth-hooks": "link:../packages/amplify-auth-hooks",
-    "aws-amplify": "6.15.5",
+    "aws-amplify": "6.15.6",
     "qrcode.react": "4.2.0",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
   "devDependencies": {
-    "vite": "7.1.5"
+    "vite": "7.1.6"
   }
 }
