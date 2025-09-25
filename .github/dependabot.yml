@@ -11,7 +11,10 @@ updates:
     cooldown:
       default-days: 7
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/"
+      - "/packages/**"
+      - "/examples"
     groups:
       all:
         patterns:
