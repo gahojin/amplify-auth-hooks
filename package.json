@@ -7,7 +7,6 @@
     "url": "https://github.com/gahojin/amplify-auth-hooks.git"
   },
   "scripts": {
-    "preinstall": "pnpm dlx only-allow pnpm",
     "build": "turbo run build --filter=!./examples/* --filter=!*props-docs",
     "lint": "turbo run lint",
     "check": "turbo run check",
