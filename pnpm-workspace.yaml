@@ -1,12 +1,3 @@
 packages:
   - packages/**
   - examples/**
-
-ignoredBuiltDependencies:
-  - '@biomejs/biome'
-  - '@swc/core'
-  - esbuild
-  - rolldown
-
-onlyBuiltDependencies:
-  - lefthook
