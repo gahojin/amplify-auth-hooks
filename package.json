@@ -30,8 +30,8 @@
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "@vitejs/plugin-react": "5.0.4",
-    "@vitest/browser": "4.0.1",
-    "@vitest/coverage-v8": "4.0.1",
+    "@vitest/browser": "4.0.2",
+    "@vitest/coverage-v8": "4.0.2",
     "jest-extended": "6.0.0",
     "lefthook": "2.0.0",
     "npm-check-updates": "19.1.1",
@@ -43,9 +43,9 @@
     "turbo": "2.5.8",
     "typescript": "5.9.3",
     "unplugin-isolated-decl": "0.15.2",
-    "vite": "7.1.11",
+    "vite": "7.1.12",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "4.0.1"
+    "vitest": "4.0.2"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
