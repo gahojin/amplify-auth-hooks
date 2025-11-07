@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build --filter=!./examples/* --filter=!*props-docs",
     "lint": "turbo run lint",
+    "lint:ci": "turbo run lint:ci",
     "check": "turbo run check",
     "check:packagejson": "turbo run check:packagejson",
     "test": "turbo run test:unit --filter=!./examples/* --filter=!*props-docs",
@@ -46,13 +47,5 @@
     "vite": "7.1.12",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "4.0.5"
-  },
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "esbuild"
-    ],
-    "onlyBuiltDependencies": [
-      "lefthook"
-    ]
   }
 }
