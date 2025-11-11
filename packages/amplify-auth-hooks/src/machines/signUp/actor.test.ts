@@ -19,10 +19,11 @@ describe('signUpActor', () => {
     const resetPassword = vi.fn().mockResolvedValue({})
     const signInWithRedirect = vi.fn().mockResolvedValue({})
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'DONE' }, isSignUpComplete: true } as SignUpOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -43,10 +44,11 @@ describe('signUpActor', () => {
     const resetPassword = vi.fn().mockResolvedValue({})
     const signInWithRedirect = vi.fn().mockResolvedValue({})
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'CONFIRM_SIGN_UP' } } as SignUpOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -73,10 +75,11 @@ describe('signUpActor', () => {
     const resetPassword = vi.fn().mockResolvedValue({})
     const signInWithRedirect = vi.fn().mockResolvedValue({})
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'CONFIRM_SIGN_UP' } } as SignUpOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -103,10 +106,11 @@ describe('signUpActor', () => {
     const resetPassword = vi.fn().mockResolvedValue({})
     const signInWithRedirect = vi.fn().mockResolvedValue({})
     const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'CONFIRM_SIGN_UP' } } as SignUpOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signUpActor({ autoSignIn, confirmSignUp, fetchUserAttributes, resendSignUpCode, resetPassword, signInWithRedirect, signUp }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
