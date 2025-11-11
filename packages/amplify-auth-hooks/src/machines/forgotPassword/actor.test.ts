@@ -13,10 +13,11 @@ describe('forgotPasswordActor', () => {
   it('コード送信からコード入力完了までの遷移', async () => {
     const confirmResetPassword = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({ nextStep: {}, isPasswordReset: true } as ResetPasswordOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       forgotPasswordActor({ confirmResetPassword, resetPassword }, { username: mockUsername, step: 'FORGOT_PASSWORD' }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -48,10 +49,11 @@ describe('forgotPasswordActor', () => {
   it('コードの再送', async () => {
     const confirmResetPassword = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({ nextStep: {}, isPasswordReset: true } as ResetPasswordOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       forgotPasswordActor({ confirmResetPassword, resetPassword }, { username: mockUsername, step: 'FORGOT_PASSWORD' }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()

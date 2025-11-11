@@ -18,10 +18,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({})
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -41,10 +42,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({})
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -65,6 +67,7 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor(
@@ -73,7 +76,7 @@ describe('signInActor', () => {
           user: { username: mockUsername, userId: 'userId' },
           step: 'SIGN_IN',
         },
-      ).provide({ actions: { sendUpdate: vi.fn() } }),
+      ).provide({ actions: { sendUpdate } }),
     )
     actor.start()
 
@@ -100,10 +103,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({})
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -124,6 +128,7 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor(
@@ -132,7 +137,7 @@ describe('signInActor', () => {
           user: { username: mockUsername, userId: 'userId' },
           step: 'SIGN_IN',
         },
-      ).provide({ actions: { sendUpdate: vi.fn() } }),
+      ).provide({ actions: { sendUpdate } }),
     )
     actor.start()
 
@@ -161,10 +166,11 @@ describe('signInActor', () => {
       const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
       const resendSignUpCode = vi.fn().mockResolvedValue({})
       const resetPassword = vi.fn().mockResolvedValue({})
+      const sendUpdate = vi.fn()
 
       const actor = createActor(
         signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-          actions: { sendUpdate: vi.fn() },
+          actions: { sendUpdate },
         }),
       )
       actor.start()
@@ -190,10 +196,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -218,10 +225,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -246,10 +254,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
     const resendSignUpCode = vi.fn().mockResolvedValue({})
     const resetPassword = vi.fn().mockResolvedValue({ nextStep: { resetPasswordStep: 'CONFIRM_RESET_PASSWORD_WITH_CODE' } } as ResetPasswordOutput)
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -274,10 +283,11 @@ describe('signInActor', () => {
     const fetchUserAttributes = vi.fn().mockResolvedValue({})
     const resendSignUpCode = vi.fn().mockResolvedValue({ attributeName: 'email' } as ResendSignUpCodeOutput)
     const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()

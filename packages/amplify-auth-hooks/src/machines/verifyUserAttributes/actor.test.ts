@@ -13,10 +13,11 @@ describe('verifyUserAttributes', () => {
       .fn()
       .mockResolvedValue({ attributeName: 'email', deliveryMedium: 'EMAIL' } as SendUserAttributeVerificationCodeOutput)
     const confirmUserAttribute = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       verifyUserAttributesActor({ sendUserAttributeVerificationCode, confirmUserAttribute }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
@@ -41,10 +42,11 @@ describe('verifyUserAttributes', () => {
       .fn()
       .mockResolvedValue({ attributeName: 'email', deliveryMedium: 'EMAIL' } as SendUserAttributeVerificationCodeOutput)
     const confirmUserAttribute = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
     const actor = createActor(
       verifyUserAttributesActor({ sendUserAttributeVerificationCode, confirmUserAttribute }).provide({
-        actions: { sendUpdate: vi.fn() },
+        actions: { sendUpdate },
       }),
     )
     actor.start()
