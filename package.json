@@ -28,11 +28,11 @@
     "@storybook/addon-vitest": "10.0.7",
     "@storybook/react-vite": "10.0.7",
     "@types/node": "24.10.1",
-    "@types/react": "19.2.4",
+    "@types/react": "19.2.5",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
-    "@vitest/browser": "4.0.8",
-    "@vitest/coverage-v8": "4.0.8",
+    "@vitest/browser": "4.0.9",
+    "@vitest/coverage-v8": "4.0.9",
     "jest-extended": "7.0.0",
     "lefthook": "2.0.4",
     "npm-check-updates": "19.1.2",
@@ -45,6 +45,6 @@
     "unplugin-isolated-decl": "0.15.6",
     "vite": "7.2.2",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "4.0.8"
+    "vitest": "4.0.9"
   }
 }
