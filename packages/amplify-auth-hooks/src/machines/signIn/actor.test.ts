@@ -157,37 +157,38 @@ describe('signInActor', () => {
     })
   })
 
-  it.each([{ step: 'CONFIRM_SIGN_IN_WITH_TOTP_CODE' }, { step: 'CONFIRM_SIGN_IN_WITH_SMS_CODE' }, { step: 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE' }])(
-    '$stepの時、confirmSignInに遷移すること',
-    async ({ step }) => {
-      const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: step } } as SignInOutput)
-      const signInWithRedirect = vi.fn().mockResolvedValue({})
-      const confirmSignIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as ConfirmSignInOutput)
-      const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
-      const resendSignUpCode = vi.fn().mockResolvedValue({})
-      const resetPassword = vi.fn().mockResolvedValue({})
-      const sendUpdate = vi.fn()
+  it.each([
+    { step: 'CONFIRM_SIGN_IN_WITH_TOTP_CODE' },
+    { step: 'CONFIRM_SIGN_IN_WITH_SMS_CODE' },
+    { step: 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE' },
+  ])('$stepの時、confirmSignInに遷移すること', async ({ step }) => {
+    const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: step } } as SignInOutput)
+    const signInWithRedirect = vi.fn().mockResolvedValue({})
+    const confirmSignIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as ConfirmSignInOutput)
+    const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
+    const resendSignUpCode = vi.fn().mockResolvedValue({})
+    const resetPassword = vi.fn().mockResolvedValue({})
+    const sendUpdate = vi.fn()
 
-      const actor = createActor(
-        signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
-          actions: { sendUpdate },
-        }),
-      )
-      actor.start()
+    const actor = createActor(
+      signInActor({ signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword }).provide({
+        actions: { sendUpdate },
+      }),
+    )
+    actor.start()
 
-      expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
+    expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
 
-      actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
-      await flushPromises()
-      expect(actor.getSnapshot().value).toStrictEqual({ confirmSignIn: 'idle' })
+    actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
+    await flushPromises()
+    expect(actor.getSnapshot().value).toStrictEqual({ confirmSignIn: 'idle' })
 
-      actor.send({ type: 'SUBMIT', data: { challengeResponse: mockConfirmationCode } })
-      await flushPromises()
-      expect(actor.getSnapshot().value).toStrictEqual('resolved')
+    actor.send({ type: 'SUBMIT', data: { challengeResponse: mockConfirmationCode } })
+    await flushPromises()
+    expect(actor.getSnapshot().value).toStrictEqual('resolved')
 
-      expect(confirmSignIn).toHaveBeenCalledWith({ challengeResponse: mockConfirmationCode })
-    },
-  )
+    expect(confirmSignIn).toHaveBeenCalledWith({ challengeResponse: mockConfirmationCode })
+  })
 
   it('CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIREDの場合、パスワード入力に遷移すること', async () => {
     const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED' } } as SignInOutput)
