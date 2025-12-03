@@ -31,12 +31,12 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
-    "@vitest/browser": "4.0.13",
-    "@vitest/coverage-v8": "4.0.13",
+    "@vitest/browser": "4.0.14",
+    "@vitest/coverage-v8": "4.0.14",
     "jest-extended": "7.0.0",
     "lefthook": "2.0.4",
     "npm-check-updates": "19.1.2",
-    "playwright": "1.56.1",
+    "playwright": "1.57.0",
     "rolldown": "1.0.0-beta.51",
     "storybook": "10.0.8",
     "terser": "5.44.1",
@@ -45,6 +45,6 @@
     "unplugin-isolated-decl": "0.15.6",
     "vite": "7.2.4",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "4.0.13"
+    "vitest": "4.0.14"
   }
 }
