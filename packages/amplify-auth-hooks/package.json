@@ -47,7 +47,7 @@
     "lint": "biome check --write .",
     "lint:ci": "biome ci .",
     "check": "tsc --noEmit",
-    "check:packagejson": "attw --pack .",
+    "check:packagejson": "attw --pack . --profile esm-only --ignore-rules cjs-resolves-to-esm",
     "test": "vitest --watch",
     "test:unit": "vitest --passWithNoTests --run --coverage",
     "storybook": "storybook dev -h 127.0.0.1 -p 6006"
