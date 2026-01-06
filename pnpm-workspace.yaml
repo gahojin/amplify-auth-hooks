@@ -7,3 +7,8 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - lefthook
+
+overrides:
+  '@vitest/expect': $vitest
+  '@vitest/mocker': $vitest
+  '@vitest/spy': $vitest
