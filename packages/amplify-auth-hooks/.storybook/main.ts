@@ -20,7 +20,6 @@ const config: StorybookConfig = {
     reactDocgen: 'react-docgen',
   },
   addons: [getAbsolutePath('@storybook/addon-links'), getAbsolutePath('@storybook/addon-docs')],
-  staticDirs: ['../public'],
   core: {},
 }
 
