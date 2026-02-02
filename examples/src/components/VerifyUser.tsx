@@ -4,7 +4,12 @@ import ErrorMessage from './ErrorMessage'
 
 const VerifyUser = () => {
   const { isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification } = useAuthenticator(
-    ({ isPending, unverifiedUserAttributes }) => [isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification],
+    ({ isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification }) => [
+      isPending,
+      unverifiedUserAttributes,
+      handleSubmit,
+      skipAttributeVerification,
+    ],
   )
   const [selectUserAttributeKey, setSelectUserAttributeKey] = useState<UnverifiedContactMethodType>()
 
@@ -13,7 +18,7 @@ const VerifyUser = () => {
     if (type) {
       setSelectUserAttributeKey(type)
     }
-  })
+  }, [unverifiedUserAttributes])
 
   return (
     <form>
