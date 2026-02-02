@@ -9,6 +9,7 @@ onlyBuiltDependencies:
   - lefthook
 
 overrides:
+  fast-xml-parser: '>=5.3.4'
   '@vitest/expect': $vitest
   '@vitest/mocker': $vitest
   '@vitest/spy': $vitest
