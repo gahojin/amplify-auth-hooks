@@ -56,13 +56,13 @@
     "@aws-amplify/auth": "6.18.0",
     "@aws-amplify/core": "6.16.0",
     "@xstate/react": "6.0.0",
-    "xstate": "5.25.1"
+    "xstate": "5.26.0"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.2",
     "jsdom": "27.4.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "peerDependencies": {
     "@aws-amplify/auth": "^6",
