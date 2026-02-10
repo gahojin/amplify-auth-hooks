@@ -53,14 +53,14 @@
     "storybook": "storybook dev -h 127.0.0.1 -p 6006"
   },
   "dependencies": {
-    "@aws-amplify/auth": "6.18.0",
+    "@aws-amplify/auth": "6.19.0",
     "@aws-amplify/core": "6.16.0",
     "@xstate/react": "6.0.0",
     "xstate": "5.26.0"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.2",
-    "jsdom": "27.4.0",
+    "jsdom": "28.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
