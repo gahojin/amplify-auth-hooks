@@ -53,8 +53,8 @@
     "storybook": "storybook dev -h 127.0.0.1 -p 6006"
   },
   "dependencies": {
-    "@aws-amplify/auth": "6.19.0",
-    "@aws-amplify/core": "6.16.0",
+    "@aws-amplify/auth": "6.19.1",
+    "@aws-amplify/core": "6.16.1",
     "@xstate/react": "6.0.0",
     "xstate": "5.26.0"
   },
