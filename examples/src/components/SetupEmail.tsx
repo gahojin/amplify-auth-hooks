@@ -3,7 +3,7 @@ import { useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const SetupEmail = () => {
-  const { isPending, handleSubmit, setRoute } = useAuthenticator(({ isPending, handleSubmit, setRoute }) => [isPending, handleSubmit, setRoute])
+  const { isPending, handleSubmit, setRoute } = useAuthenticator(({ isPending }) => [isPending])
   const [email, setEmail] = useState('')
 
   return (

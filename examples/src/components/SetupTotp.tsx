@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const SetupTotp = () => {
-  const { isPending, totpSecretCode, username, handleSubmit, setRoute } = useAuthenticator(
-    ({ isPending, totpSecretCode, username, handleSubmit, setRoute }) => [isPending, totpSecretCode, username, handleSubmit, setRoute],
-  )
+  const { isPending, totpSecretCode, username, handleSubmit, setRoute } = useAuthenticator(({ isPending, totpSecretCode, username }) => [
+    isPending,
+    totpSecretCode,
+    username,
+  ])
   const [totpIssuer, setTotpIssuer] = useState('AWSCognito')
   const [totpUsername, setTotpUserName] = useState('')
   const [qrcode, setQrcode] = useState<string | null>(null)

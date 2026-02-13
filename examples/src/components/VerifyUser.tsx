@@ -4,12 +4,7 @@ import ErrorMessage from './ErrorMessage'
 
 const VerifyUser = () => {
   const { isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification } = useAuthenticator(
-    ({ isPending, unverifiedUserAttributes, handleSubmit, skipAttributeVerification }) => [
-      isPending,
-      unverifiedUserAttributes,
-      handleSubmit,
-      skipAttributeVerification,
-    ],
+    ({ isPending, unverifiedUserAttributes }) => [isPending, unverifiedUserAttributes],
   )
   const [selectUserAttributeKey, setSelectUserAttributeKey] = useState<UnverifiedContactMethodType>()
 
