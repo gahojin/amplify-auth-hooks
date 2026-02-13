@@ -4,11 +4,7 @@ import { useEffect, useState } from 'react'
 import ErrorMessage from './ErrorMessage'
 
 const SelectMfaType = () => {
-  const { isPending, allowedMfaTypes, handleSubmit } = useAuthenticator(({ isPending, allowedMfaTypes, handleSubmit }) => [
-    isPending,
-    allowedMfaTypes,
-    handleSubmit,
-  ])
+  const { isPending, allowedMfaTypes, handleSubmit } = useAuthenticator(({ isPending, allowedMfaTypes }) => [isPending, allowedMfaTypes])
   const [selectMfaType, setSelectMfaType] = useState<AuthMFAType>()
 
   useEffect(() => {
