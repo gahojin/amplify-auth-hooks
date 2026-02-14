@@ -1,4 +1,12 @@
-import type { ConfirmSignInOutput, FetchUserAttributesOutput, ResendSignUpCodeOutput, ResetPasswordOutput, SignInOutput } from '@aws-amplify/auth'
+import type {
+  ConfirmSignInInput,
+  ConfirmSignInOutput,
+  FetchUserAttributesOutput,
+  ResendSignUpCodeOutput,
+  ResetPasswordOutput,
+  SignInOutput,
+} from '@aws-amplify/auth'
+import type { Step } from 'src/machines/types'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
 import { signInActor } from './actor'
@@ -304,5 +312,43 @@ describe('signInActor', () => {
       remoteError: undefined,
       username: mockUsername,
     })
+  })
+
+  it.each([
+    { step: 'CONFIRM_SIGN_IN_WITH_SMS_CODE' },
+    { step: 'CONFIRM_SIGN_IN_WITH_TOTP_CODE' },
+    { step: 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE' },
+    { step: 'CONTINUE_SIGN_IN_WITH_TOTP_SETUP' },
+    { step: 'CONTINUE_SIGN_IN_WITH_EMAIL_SETUP' },
+    { step: 'CONTINUE_SIGN_IN_WITH_MFA_SELECTION' },
+    { step: 'CONTINUE_SIGN_IN_WITH_MFA_SETUP_SELECTION' },
+  ])('$stepから、サインイン成功すること', async ({ step }) => {
+    const signIn = vi.fn().mockRejectedValue({})
+    const signInWithRedirect = vi.fn().mockRejectedValue({})
+    const confirmSignIn = vi.fn().mockImplementation((input: ConfirmSignInInput) => {
+      if (input.challengeResponse === mockConfirmationCode) {
+        return Promise.resolve({ isSignedIn: true, nextStep: { signInStep: 'DONE' } } satisfies ConfirmSignInOutput)
+      }
+      return Promise.reject({})
+    })
+    const fetchUserAttributes = vi.fn().mockResolvedValue({ email: mockEmail } as FetchUserAttributesOutput)
+    const resendSignUpCode = vi.fn().mockRejectedValue({})
+    const resetPassword = vi.fn().mockRejectedValue({})
+    const sendUpdate = vi.fn()
+
+    const actor = createActor(
+      signInActor(
+        { signIn, signInWithRedirect, confirmSignIn, fetchUserAttributes, resendSignUpCode, resetPassword },
+        {
+          user: { username: mockUsername, userId: 'userId' },
+          step: step as Step,
+        },
+      ).provide({ actions: { sendUpdate } }),
+    )
+    actor.start()
+
+    actor.send({ type: 'SUBMIT', data: { challengeResponse: mockConfirmationCode } })
+    await flushPromises()
+    expect(actor.getSnapshot().value).toStrictEqual('resolved')
   })
 })

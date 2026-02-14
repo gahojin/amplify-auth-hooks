@@ -17,6 +17,7 @@ import {
   setNextSignInStep,
   setRemoteError,
   setShouldVerifyUserAttributeStep,
+  setSignInActorDoneData,
   setTotpSecretCode,
   setUnverifiedUserAttributes,
   setUsername,
@@ -41,7 +42,7 @@ type SignInHandlers = Pick<Handlers, 'confirmSignIn' | 'fetchUserAttributes' | '
  * @internal
  */
 export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInContext) => {
-  return setup({
+  const machineSetup = setup({
     types: {
       context: {} as SignInContext,
       events: {} as AuthEvent,
@@ -76,24 +77,47 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       setAllowedMfaTypes: assign({ allowedMfaTypes: setAllowedMfaTypes }),
       setNextSignInStep: assign({ step: setNextSignInStep }),
       setConfirmSignUpStep: assign({ step: setConfirmSignUpStep }),
-      setActorDoneData: assign(({ event }) => {
-        const output = event?.output ?? {}
-        return {
-          codeDeliveryDetails: output.codeDeliveryDetails,
-          missingAttributes: output.missingAttributes,
-          remoteError: output.remoteError,
-          username: output.username,
-          step: output.step,
-          totpSecretCode: output.totpSecretCode,
-          unverifiedUserAttributes: output.unverifiedUserAttributes,
-          allowedMfaTypes: output.allowedMfaTypes,
-        }
-      }),
+      setActorDoneData: assign(setSignInActorDoneData),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
       clearError: assign({ remoteError: undefined }),
     },
-  }).createMachine({
+  })
+
+  const handleSignInResponse = machineSetup.createStateConfig({
+    onDone: [
+      { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
+      { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
+      { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
+      { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
+      { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
+    ],
+  })
+  const confirmSignInState = machineSetup.createStateConfig({
+    initial: 'idle',
+    exit: 'clearError',
+    states: {
+      idle: {
+        entry: 'sendUpdate',
+        on: {
+          SUBMIT: { target: 'submit' },
+          SIGN_IN: { target: '#signInActor.signIn' },
+        },
+      },
+      submit: {
+        tags: 'pending',
+        entry: ['sendUpdate', 'clearError'],
+        invoke: {
+          src: 'confirmSignIn',
+          input: ({ event }) => event.data as ConfirmSignInInput,
+          ...handleSignInResponse,
+          onError: { actions: 'setRemoteError', target: 'idle' },
+        },
+      },
+    },
+  })
+
+  return machineSetup.createMachine({
     id: 'signInActor',
     context: ({ input }) => ({ step: 'SIGN_IN', ...overridesContext, ...input }),
     initial: 'init',
@@ -164,13 +188,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
             invoke: {
               src: 'signIn',
               input: ({ event }) => event.data as SignInInput,
-              onDone: [
-                { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
-                { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
-                { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
-                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-                { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
-              ],
+              ...handleSignInResponse,
               onError: [
                 { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setConfirmSignUpStep', target: '#signInActor.resendSignUpCode' },
                 { actions: 'setRemoteError', target: 'idle' },
@@ -179,35 +197,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           },
         },
       },
-      confirmSignIn: {
-        initial: 'idle',
-        exit: 'clearError',
-        states: {
-          idle: {
-            entry: 'sendUpdate',
-            on: {
-              SUBMIT: { target: 'submit' },
-              SIGN_IN: { target: '#signInActor.signIn' },
-            },
-          },
-          submit: {
-            tags: 'pending',
-            entry: ['sendUpdate', 'clearError'],
-            invoke: {
-              src: 'confirmSignIn',
-              input: ({ event }) => event.data as ConfirmSignInInput,
-              onDone: [
-                { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
-                { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
-                { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
-                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-                { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
-              ],
-              onError: { actions: 'setRemoteError', target: 'idle' },
-            },
-          },
-        },
-      },
+      confirmSignIn: confirmSignInState,
       forceChangePassword: {
         initial: 'idle',
         entry: 'clearError',
@@ -223,105 +213,15 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
             invoke: {
               src: 'confirmSignIn',
               input: ({ event }) => event.data as ConfirmSignInInput,
-              onDone: [
-                { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
-                { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
-                { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
-                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-                { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
-              ],
+              ...handleSignInResponse,
               onError: { actions: 'setRemoteError', target: 'idle' },
             },
           },
         },
       },
-      setupTotp: {
-        initial: 'idle',
-        exit: 'clearError',
-        states: {
-          idle: {
-            entry: 'sendUpdate',
-            on: {
-              SUBMIT: { target: 'submit' },
-              SIGN_IN: { target: '#signInActor.signIn' },
-            },
-          },
-          submit: {
-            tags: 'pending',
-            entry: ['sendUpdate', 'clearError'],
-            invoke: {
-              src: 'confirmSignIn',
-              input: ({ event }) => event.data as ConfirmSignInInput,
-              onDone: [
-                { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
-                { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
-                { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
-                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-                { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
-              ],
-              onError: { actions: 'setRemoteError', target: 'idle' },
-            },
-          },
-        },
-      },
-      setupEmail: {
-        initial: 'idle',
-        exit: 'clearError',
-        states: {
-          idle: {
-            entry: 'sendUpdate',
-            on: {
-              SUBMIT: { target: 'submit' },
-              SIGN_IN: { target: '#signInActor.signIn' },
-            },
-          },
-          submit: {
-            tags: 'pending',
-            entry: ['sendUpdate', 'clearError'],
-            invoke: {
-              src: 'confirmSignIn',
-              input: ({ event }) => event.data as ConfirmSignInInput,
-              onDone: [
-                { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
-                { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
-                { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
-                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-                { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
-              ],
-              onError: { actions: 'setRemoteError', target: 'idle' },
-            },
-          },
-        },
-      },
-      selectMfaType: {
-        initial: 'idle',
-        exit: 'clearError',
-        states: {
-          idle: {
-            entry: 'sendUpdate',
-            on: {
-              SUBMIT: { target: 'submit' },
-              SIGN_IN: { target: '#signInActor.signIn' },
-            },
-          },
-          submit: {
-            tags: 'pending',
-            entry: ['sendUpdate', 'clearError'],
-            invoke: {
-              src: 'confirmSignIn',
-              input: ({ event }) => event.data as ConfirmSignInInput,
-              onDone: [
-                { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signInActor.fetchUserAttributes' },
-                { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
-                { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
-                { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-                { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
-              ],
-              onError: { actions: 'setRemoteError', target: 'idle' },
-            },
-          },
-        },
-      },
+      setupTotp: confirmSignInState,
+      setupEmail: confirmSignInState,
+      selectMfaType: confirmSignInState,
       resolved: { type: 'final' },
     },
     output: ({ context }) => context,
