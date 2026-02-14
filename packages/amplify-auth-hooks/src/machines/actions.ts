@@ -14,6 +14,7 @@ import type {
   AuthMFAType,
   AuthTOTPSetupDetails,
   ResetPasswordStep,
+  SignInContext,
   SignInStep,
   SignUpStep,
   Step,
@@ -95,6 +96,20 @@ const setSelectedUserAttribute = ({ event }: ActionParams): AuthVerifiableAttrib
   return output?.attributeName
 }
 
+const setSignInActorDoneData = ({ event }: ActionParams<SignInContext>): SignInContext => {
+  const output = event?.output ?? {}
+  return {
+    codeDeliveryDetails: output.codeDeliveryDetails,
+    missingAttributes: output.missingAttributes,
+    remoteError: output.remoteError,
+    username: output.username,
+    step: output.step,
+    totpSecretCode: output.totpSecretCode,
+    unverifiedUserAttributes: output.unverifiedUserAttributes,
+    allowedMfaTypes: output.allowedMfaTypes,
+  }
+}
+
 export {
   setAllowedMfaTypes,
   setCodeDeliveryDetails,
@@ -112,4 +127,5 @@ export {
   setUsername,
   setUser,
   setUnverifiedUserAttributes,
+  setSignInActorDoneData,
 }
