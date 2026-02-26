@@ -15,11 +15,11 @@
     "check:packagejson": "turbo run check:packagejson",
     "test": "turbo run test:unit --filter=!./examples/* --filter=!*props-docs",
     "clean": "turbo run clean --filter=!./examples/* --filter=!*props-docs",
-    "ncu": "npm-check-updates --workspaces -u"
+    "ncu": "mise run ncu"
   },
   "dependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@biomejs/biome": "2.4.2",
+    "@biomejs/biome": "2.4.4",
     "@fast-check/vitest": "0.2.4",
     "@storybook/addon-docs": "10.2.9",
     "@storybook/addon-links": "10.2.9",
@@ -32,7 +32,6 @@
     "@vitest/browser": "4.0.18",
     "@vitest/coverage-v8": "4.0.18",
     "jest-extended": "7.0.0",
-    "npm-check-updates": "19.4.0",
     "playwright": "1.58.2",
     "rolldown": "1.0.0-rc.5",
     "storybook": "10.2.9",
