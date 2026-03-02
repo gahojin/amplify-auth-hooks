@@ -20,7 +20,7 @@ const ConfirmSignIn = () => {
             value={confirmationCode}
             onChange={(e) => setConfirmationCode(e.target.value)}
             disabled={isPending}
-            autoComplete="off"
+            autoComplete="one-time-code"
           />
         </label>
         <button type="button" onClick={() => handleSubmit({ challengeResponse: confirmationCode })} disabled={isPending}>
