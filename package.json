@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@biomejs/biome": "2.4.7",
+    "@biomejs/biome": "2.4.8",
     "@fast-check/vitest": "0.3.0",
     "@storybook/addon-docs": "10.3.0",
     "@storybook/addon-links": "10.3.0",
