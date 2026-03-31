@@ -6,9 +6,9 @@ import type {
   ResetPasswordOutput,
   SignInOutput,
 } from '@aws-amplify/auth'
-import type { Step } from 'src/machines/types'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
+import type { Step } from '../types'
 import { signInActor } from './actor'
 
 const flushPromises = () => new Promise(setImmediate)
