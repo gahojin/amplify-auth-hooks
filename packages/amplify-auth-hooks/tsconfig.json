@@ -5,7 +5,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "isolatedDeclarations": true,
-    "baseUrl": ".",
     "outDir": "dist",
     "lib": ["ES2022", "DOM"],
     "types": ["@types/node", "vitest/globals", "jest-extended"]
