@@ -5,10 +5,14 @@ packages:
 ignoredBuiltDependencies:
   - esbuild
 
-minimumReleaseAge: 2880
-
 overrides:
   fast-xml-parser: '>=5.3.6'
   '@vitest/expect': $vitest
   '@vitest/mocker': $vitest
   '@vitest/spy': $vitest
+
+# リリースから一定時間経過していないか、信頼性低下したパッケージはインストールしない
+minimumReleaseAge: 2880
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - 'semver@6.3.1'
