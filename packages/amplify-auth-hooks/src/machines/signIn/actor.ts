@@ -1,20 +1,24 @@
-import type {
-  ConfirmSignInInput,
-  ConfirmSignInOutput,
-  ResendSignUpCodeInput,
-  ResendSignUpCodeOutput,
-  ResetPasswordInput,
-  ResetPasswordOutput,
-  SignInInput,
-  SignInOutput,
-  SignInWithRedirectInput,
+import {
+  type ConfirmSignInInput,
+  type ConfirmSignInOutput,
+  listWebAuthnCredentials,
+  type ResendSignUpCodeInput,
+  type ResendSignUpCodeOutput,
+  type ResetPasswordInput,
+  type ResetPasswordOutput,
+  type SignInInput,
+  type SignInOutput,
+  type SignInWithRedirectInput,
 } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
 import {
   setAllowedMfaTypes,
   setCodeDeliveryDetails,
+  setFetchedUserAttributes,
+  setHasExistingPasskeys,
   setNextSignInStep,
   setRemoteError,
+  setSelectedAuthMethod,
   setSignInActorDoneData,
   setTotpSecretCode,
   setUnverifiedUserAttributes,
@@ -22,11 +26,14 @@ import {
 } from '~/machines/actions.js'
 import {
   hasCompletedSignIn,
+  hasPasskeyRegistrationPrompts,
   isShouldConfirmSignInWithNewPassword,
   shouldConfirmSignIn,
   shouldConfirmSignInWithNewPassword,
   shouldConfirmSignUpFromSignIn,
+  shouldPromptPasskeyRegistration,
   shouldResetPasswordFromSignIn,
+  shouldReturnToSelectMethod,
   shouldSelectMfaType,
   shouldSetupEmail,
   shouldSetupTotp,
@@ -47,6 +54,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
     },
     guards: {
       hasCompletedSignIn: ({ event }) => hasCompletedSignIn(event),
+      hasPasskeyRegistrationPrompts: ({ context: { passwordless } }) => hasPasskeyRegistrationPrompts(passwordless),
       isShouldConfirmSignInWithNewPassword: ({ context: { step } }) => isShouldConfirmSignInWithNewPassword(step),
       shouldConfirmSignIn: ({ context: { step } }) => shouldConfirmSignIn(step),
       shouldSetupTotp: ({ context: { step } }) => shouldSetupTotp(step),
@@ -56,6 +64,8 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       shouldConfirmSignInWithNewPassword: ({ event }) => shouldConfirmSignInWithNewPassword(event),
       shouldResetPasswordFromSignIn: ({ event }) => shouldResetPasswordFromSignIn(event),
       shouldConfirmSignUpFromSignIn: ({ event }) => shouldConfirmSignUpFromSignIn(event),
+      shouldPromptPasskeyRegistration: ({ context }) => shouldPromptPasskeyRegistration(context),
+      shouldReturnToSelectMethod: ({ context }) => shouldReturnToSelectMethod(context),
     },
     actors: {
       fetchUserAttributes: fromPromise(() => handlers.fetchUserAttributes()),
@@ -70,10 +80,15 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       setShouldVerifyUserAttributeStep: assign({ step: 'SHOULD_CONFIRM_USER_ATTRIBUTE', unverifiedUserAttributes: setUnverifiedUserAttributes }),
       setConfirmAttributeCompleteStep: assign({ step: 'CONFIRM_ATTRIBUTE_COMPLETE' }),
       setConfirmSignUpStep: assign({ step: 'CONFIRM_SIGN_UP' }),
+      setSelectAuthMethodStep: assign({ step: 'SELECT_AUTH_METHOD' }),
       setNextSignInStep: assign({ step: setNextSignInStep }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
+      setFetchedUserAttributes: assign({ fetchedUserAttributes: setFetchedUserAttributes }),
       setTotpSecretCode: assign({ totpSecretCode: setTotpSecretCode }),
       setAllowedMfaTypes: assign({ allowedMfaTypes: setAllowedMfaTypes }),
+      setSelectedAuthMethod: assign({ selectedAuthMethod: setSelectedAuthMethod }),
+      setHasExistingPasskeys: assign({ hasExistingPasskeys: setHasExistingPasskeys }),
+      clearHasExistingPasskeys: assign({ hasExistingPasskeys: false }),
       setActorDoneData: assign(setSignInActorDoneData),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
@@ -87,7 +102,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signInActor.forceChangePassword' },
       { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resetPassword' },
       { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signInActor.resendSignUpCode' },
-      { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signInActor.init' },
+      { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes', 'setCodeDeliveryDetails'], target: '#signInActor.init' },
     ],
   })
   const confirmSignInState = machineSetup.createStateConfig({
@@ -142,15 +157,39 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
         invoke: {
           src: 'fetchUserAttributes',
           onDone: [
-            {
-              guard: 'shouldVerifyAttribute',
-              actions: 'setShouldVerifyUserAttributeStep',
-              target: '#signInActor.resolved',
-            },
-            { actions: 'setConfirmAttributeCompleteStep', target: '#signInActor.resolved' },
+            { guard: 'hasPasskeyRegistrationPrompts', actions: 'setFetchedUserAttributes', target: '#signInActor.checkPasskeys' },
+            { actions: 'setFetchedUserAttributes', target: '#signInActor.evaluatePasskeyPrompt' },
           ],
           onError: { actions: 'setConfirmAttributeCompleteStep', target: '#signInActor.resolved' },
         },
+      },
+      checkPasskeys: {
+        invoke: {
+          src: fromPromise(async () => {
+            try {
+              const result = await listWebAuthnCredentials()
+              return result.credentials && result.credentials.length > 0
+            } catch {
+              return false
+            }
+          }),
+          onDone: [
+            { actions: 'setHasExistingPasskeys', target: '#signInActor.evaluatePasskeyPrompt' },
+            { actions: 'setFetchedUserAttributes', target: '#signInActor.evaluatePasskeyPrompt' },
+          ],
+          onError: { actions: 'clearHasExistingPasskeys', target: '#signInActor.evaluatePasskeyPrompt' },
+        },
+      },
+      evaluatePasskeyPrompt: {
+        always: [
+          { guard: 'shouldPromptPasskeyRegistration', target: '#signInActor.passkeyPrompt' },
+          {
+            guard: 'shouldVerifyAttribute',
+            actions: 'setShouldVerifyUserAttributeStep',
+            target: '#signInActor.resolved',
+          },
+          { actions: 'setConfirmAttributeCompleteStep', target: '#signInActor.resolved' },
+        ],
       },
       resendSignUpCode: {
         tags: 'pending',
@@ -176,7 +215,15 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
             entry: 'sendUpdate',
             on: {
               FEDERATED_SIGN_IN: { target: '#signInActor.federatedSignIn' },
-              SUBMIT: { target: 'submit' },
+              SUBMIT: [{ target: 'submit' }],
+              SHOW_AUTH_METHODS: { actions: 'setUsername', target: 'selectMethod' },
+            },
+          },
+          selectMethod: {
+            entry: ['sendUpdate', 'setSelectAuthMethodStep', 'setUsername'],
+            on: {
+              SUBMIT: { actions: 'setSelectedAuthMethod', target: 'submit' },
+              SIGN_IN: { target: 'idle' },
             },
           },
           submit: {
@@ -187,6 +234,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
               input: ({ event }) => event.data as SignInInput,
               ...handleSignInResponse,
               onError: [
+                { guard: 'shouldReturnToSelectMethod', actions: 'setRemoteError', target: 'selectMethod' },
                 { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setConfirmSignUpStep', target: '#signInActor.resendSignUpCode' },
                 { actions: 'setRemoteError', target: 'idle' },
               ],
@@ -219,6 +267,12 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       setupTotp: confirmSignInState,
       setupEmail: confirmSignInState,
       selectMfaType: confirmSignInState,
+      passkeyPrompt: {
+        entry: 'sendUpdate',
+        on: {
+          SUBMIT: { actions: 'setConfirmAttributeCompleteStep', target: '#signInActor.resolved' },
+        },
+      },
       resolved: { type: 'final' },
     },
     output: ({ context }) => context,
