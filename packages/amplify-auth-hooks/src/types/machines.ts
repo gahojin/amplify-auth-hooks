@@ -35,6 +35,27 @@ import type {
 } from '@aws-amplify/auth'
 import type { UnverifiedUserAttributes } from '~/types/user.js'
 
+// Passwordless authentication types
+export type AuthMethod = 'PASSWORD' | 'EMAIL_OTP' | 'SMS_OTP' | 'WEB_AUTHN'
+
+export type PasswordlessCapabilities = {
+  emailOtpEnabled: boolean
+  smsOtpEnabled: boolean
+  webAuthnEnabled: boolean
+  preferredChallenge?: AuthMethod
+}
+
+export type PasswordlessSettings = {
+  hiddenAuthMethods?: AuthMethod[]
+  preferredAuthMethod?: AuthMethod
+  passkeyRegistrationPrompts?:
+    | {
+        afterSignin?: 'ALWAYS' | 'NEVER'
+        afterSignup?: 'ALWAYS' | 'NEVER'
+      }
+    | boolean
+}
+
 export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
 export type AuthAllowedMFATypes = AuthMFAType[]
 
@@ -54,6 +75,7 @@ export type AuthEventTypes =
   | 'RESEND'
   | 'FORGOT_PASSWORD'
   | 'AUTO_SIGN_IN_FAILURE'
+  | 'SHOW_AUTH_METHODS'
   | 'SIGN_IN_WITH_REDIRECT'
   | 'SIGN_IN'
   | 'SIGN_OUT'
@@ -90,6 +112,7 @@ export type AuthContext = {
   user?: AuthUser
   config?: {
     initialState?: 'signIn' | 'signUp' | 'forgotPassword'
+    passwordless?: PasswordlessSettings
   }
   // data returned from actors when they finish and reach their final state
   actorDoneData?: ActorDoneData
@@ -98,6 +121,7 @@ export type AuthContext = {
 export type InitialStep = 'FORGOT_PASSWORD' | 'SIGN_IN' | 'SIGN_UP'
 
 export type SignInStep =
+  | 'SELECT_AUTH_METHOD'
   | 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE'
   | 'CONFIRM_SIGN_IN_WITH_SMS_CODE'
   | 'CONFIRM_SIGN_IN_WITH_TOTP_CODE'
@@ -136,6 +160,12 @@ type BaseContext = {
   // retrieved from the Auth module on sign in,
   // cleared on sign out
   user?: AuthUser
+
+  // passwordless authentication
+  selectedAuthMethod?: AuthMethod
+  passwordless?: PasswordlessSettings
+  hasExistingPasskeys?: boolean
+  fetchedUserAttributes?: Record<string, unknown>
 }
 
 export type ResetPasswordContext = BaseContext & ActorDoneData
