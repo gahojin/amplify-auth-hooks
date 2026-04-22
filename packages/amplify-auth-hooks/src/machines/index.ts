@@ -194,3 +194,4 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     },
   })
 }
+export type createAuthenticatorMachineReturnType = ReturnType<typeof createAuthenticatorMachine>
