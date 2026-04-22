@@ -7,7 +7,10 @@
     "isolatedDeclarations": true,
     "outDir": "dist",
     "lib": ["ES2022", "DOM"],
-    "types": ["@types/node", "vitest/globals", "jest-extended"]
+    "types": ["@types/node", "vitest/globals", "jest-extended"],
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["dist", "node_modules"]

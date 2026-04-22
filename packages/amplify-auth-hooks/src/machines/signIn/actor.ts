@@ -21,7 +21,7 @@ import {
   setTotpSecretCode,
   setUnverifiedUserAttributes,
   setUsername,
-} from '../actions'
+} from '~/machines/actions'
 import {
   hasCompletedSignIn,
   isShouldConfirmSignInWithNewPassword,
@@ -33,8 +33,8 @@ import {
   shouldSetupEmail,
   shouldSetupTotp,
   shouldVerifyAttribute,
-} from '../guards'
-import type { AuthEvent, Handlers, SignInContext } from '../types'
+} from '~/machines/guards'
+import type { AuthEvent, Handlers, SignInContext } from '~/types/machines'
 
 type SignInHandlers = Pick<Handlers, 'confirmSignIn' | 'fetchUserAttributes' | 'resetPassword' | 'signIn' | 'signInWithRedirect' | 'resendSignUpCode'>
 

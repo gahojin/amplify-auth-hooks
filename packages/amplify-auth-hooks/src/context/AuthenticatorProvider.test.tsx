@@ -2,7 +2,7 @@ import { Hub } from '@aws-amplify/core'
 import { render, waitFor } from '@testing-library/react'
 import { act } from 'react'
 import { describe, it } from 'vitest'
-import { useAuthenticator } from '../hooks/useAuthenticator'
+import { useAuthenticator } from '~/hooks/useAuthenticator'
 import AuthenticatorProvider from './AuthenticatorProvider'
 
 // 呼び出し確認のため、aws-amplifyをモック化する

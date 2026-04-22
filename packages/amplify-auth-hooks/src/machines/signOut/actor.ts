@@ -1,5 +1,5 @@
 import { fromPromise, setup } from 'xstate'
-import type { Handlers, SignOutContext } from '../types'
+import type { Handlers, SignOutContext } from '~/types/machines'
 
 type SignOutHandlers = Pick<Handlers, 'signOut'>
 

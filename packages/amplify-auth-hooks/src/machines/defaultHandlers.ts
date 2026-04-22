@@ -14,7 +14,7 @@ import {
   signOut,
   signUp,
 } from '@aws-amplify/auth'
-import type { Handlers } from './types'
+import type { Handlers } from '~/types/machines'
 
 export const defaultHandlers: Handlers = {
   getCurrentUser,

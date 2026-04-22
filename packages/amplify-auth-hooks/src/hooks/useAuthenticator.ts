@@ -1,9 +1,9 @@
 import { useSelector } from '@xstate/react'
 import { useContext } from 'react'
-import { AuthenticatorContext } from '../context'
+import { AuthenticatorContext } from '~/context'
+import { getComparator } from '~/hooks/utils'
+import type { UseAuthenticator, UseAuthenticatorSelector } from '~/types/hooks'
 import { getSendEventAliases, getServiceContextFacade } from './facade'
-import type { UseAuthenticator, UseAuthenticatorSelector } from './types'
-import { getComparator } from './utils'
 
 const defaultComparator = (): false => false
 
