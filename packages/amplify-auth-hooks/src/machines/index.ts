@@ -1,7 +1,8 @@
 import type { AuthUser } from '@aws-amplify/auth'
 import { assign, forwardTo, fromPromise, setup } from 'xstate'
-import type { AuthMachineHubHandlerOptions } from '../authenticator/types'
-import { signInActor } from '../machines/signIn/actor'
+import { signInActor } from '~/machines/signIn/actor'
+import type { AuthMachineHubHandlerOptions } from '~/types/authenticator'
+import type { ActorDoneData, AuthContext, AuthEvent, Handlers } from '~/types/machines'
 import { defaultHandlers } from './defaultHandlers'
 import { forgotPasswordActor } from './forgotPassword/actor'
 import {
@@ -13,7 +14,6 @@ import {
 } from './guards'
 import { signOutActor } from './signOut/actor'
 import { signUpActor } from './signUp/actor'
-import type { ActorDoneData, AuthContext, AuthEvent, Handlers } from './types'
 import { verifyUserAttributesActor } from './verifyUserAttributes/actor'
 
 export type AuthenticatorMachineOptions = AuthContext['config'] & {
@@ -194,3 +194,4 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
     },
   })
 }
+export type createAuthenticatorMachineReturnType = ReturnType<typeof createAuthenticatorMachine>

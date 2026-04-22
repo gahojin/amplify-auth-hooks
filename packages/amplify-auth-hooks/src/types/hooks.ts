@@ -1,5 +1,5 @@
 import type { AuthUser, CodeDeliveryDetails } from '@aws-amplify/auth'
-import type { AuthAllowedMFATypes, AuthEventData, NavigableRoute, UnverifiedUserAttributes } from '../machines/types'
+import type { AuthAllowedMFATypes, AuthEventData, NavigableRoute, UnverifiedUserAttributes } from './machines'
 
 export type AuthenticatorRoute =
   | 'authenticated'

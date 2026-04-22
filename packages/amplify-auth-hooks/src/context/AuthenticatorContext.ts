@@ -1,5 +1,5 @@
 import { type Context, createContext } from 'react'
-import type { AuthActor } from '../authenticator/types'
+import type { AuthActor } from '~/types/authenticator'
 
 type AuthenticatorContextType = {
   actor: AuthActor

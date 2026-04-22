@@ -10,7 +10,7 @@ import type {
   SignUpOutput,
 } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setNextSignUpStep, setRemoteError, setUnverifiedUserAttributes, setUsername } from '../actions'
+import { setCodeDeliveryDetails, setNextSignUpStep, setRemoteError, setUnverifiedUserAttributes, setUsername } from '~/machines/actions'
 import {
   hasCompletedSignIn,
   hasCompletedSignUp,
@@ -20,8 +20,8 @@ import {
   shouldConfirmSignUpFromSignIn,
   shouldResetPasswordFromSignIn,
   shouldVerifyAttribute,
-} from '../guards'
-import type { AuthEvent, Handlers, SignUpContext } from '../types'
+} from '~/machines/guards'
+import type { AuthEvent, Handlers, SignUpContext } from '~/types/machines'
 
 type SignUpHandlers = Pick<
   Handlers,

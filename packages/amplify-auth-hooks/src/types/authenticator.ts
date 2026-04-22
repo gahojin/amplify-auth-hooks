@@ -1,9 +1,9 @@
 import type { AuthUser } from '@aws-amplify/auth'
 import type { HubCapsule } from '@aws-amplify/core'
 import type { ActorRefFrom } from 'xstate'
-import type { createAuthenticatorMachine } from '../machines'
+import type { createAuthenticatorMachineReturnType } from '~/machines'
 
-export type AuthActor = ActorRefFrom<ReturnType<typeof createAuthenticatorMachine>>
+export type AuthActor = ActorRefFrom<createAuthenticatorMachineReturnType>
 
 export type AuthMachineHubHandlerOptions = {
   onSignIn?: (user: AuthUser) => void

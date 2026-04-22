@@ -10,7 +10,7 @@
  */
 
 import type { FetchUserAttributesOutput, ResetPasswordOutput, SignInOutput, SignUpOutput } from '@aws-amplify/auth'
-import type { AuthEvent, ResetPasswordContext, Step } from './types'
+import type { AuthEvent, ResetPasswordContext, Step } from '~/types/machines'
 
 const SIGN_IN_STEP_MFA_CONFIRMATION: Step[] = ['CONFIRM_SIGN_IN_WITH_SMS_CODE', 'CONFIRM_SIGN_IN_WITH_TOTP_CODE', 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE']
 

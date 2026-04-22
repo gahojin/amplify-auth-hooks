@@ -11,7 +11,7 @@
 
 import { Hub } from '@aws-amplify/core'
 import { AmplifyErrorCode } from '@aws-amplify/core/internals/utils'
-import type { AuthActor, AuthMachineHubHandler, StopListenerCallback } from './types'
+import type { AuthActor, AuthMachineHubHandler, StopListenerCallback } from '~/types/authenticator'
 
 export const defaultAuthHubHandler: AuthMachineHubHandler = ({ payload }, actor, options) => {
   const { data, event } = payload

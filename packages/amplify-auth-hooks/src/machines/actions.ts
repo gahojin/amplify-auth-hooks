@@ -19,7 +19,7 @@ import type {
   SignUpStep,
   Step,
   UnverifiedUserAttributes,
-} from './types'
+} from '~/types/machines'
 
 type ActionParams<Context = unknown> = {
   context: Context

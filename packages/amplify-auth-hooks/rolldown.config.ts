@@ -5,6 +5,9 @@ export default defineConfig([
   {
     external: [/^node:/, /^@aws-amplify\//, /^@types\//, /^@xstate\//, /^react\//, 'react', 'react-dom', 'xstate'],
     treeshake: true,
+    experimental: {
+      nativeMagicString: true,
+    },
     optimization: {
       inlineConst: true,
     },

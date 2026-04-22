@@ -9,7 +9,7 @@
  *        http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import type { Comparator, UseAuthenticatorSelector } from '../hooks/types'
+import type { Comparator, UseAuthenticatorSelector } from '~/types/hooks'
 
 /**
  * Checks if `value` is an Object (non-primitive, non-array, non-function)
