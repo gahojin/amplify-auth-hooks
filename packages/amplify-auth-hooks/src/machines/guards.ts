@@ -10,7 +10,7 @@
  */
 
 import type { FetchUserAttributesOutput, ResetPasswordOutput, SignInOutput, SignUpOutput } from '@aws-amplify/auth'
-import type { AuthEvent, ResetPasswordContext, SignUpContext, Step } from '~/types/machines'
+import type { AuthEvent, PasswordlessSettings, ResetPasswordContext, SignInContext, SignUpContext, Step } from '~/types/machines'
 
 const SIGN_IN_STEP_MFA_CONFIRMATION: Step[] = ['CONFIRM_SIGN_IN_WITH_SMS_CODE', 'CONFIRM_SIGN_IN_WITH_TOTP_CODE', 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE']
 
@@ -123,4 +123,50 @@ export const shouldVerifyAttribute = (event: AuthEvent): boolean => {
 
 export const isUserAlreadyConfirmed = (event: AuthEvent): boolean => {
   return event.error?.message === 'User is already confirmed.'
+}
+
+export const shouldPromptPasskeyRegistration = ({ passwordless, hasExistingPasskeys }: SignInContext): boolean => {
+  const { passkeyRegistrationPrompts } = passwordless || {}
+
+  if (!passkeyRegistrationPrompts) {
+    return false
+  }
+
+  // Don't prompt if user already has passkeys
+  if (hasExistingPasskeys) {
+    return false
+  }
+
+  if (typeof passkeyRegistrationPrompts === 'boolean') {
+    return passkeyRegistrationPrompts
+  }
+
+  return passkeyRegistrationPrompts.afterSignin === 'ALWAYS'
+}
+
+export const shouldPromptPasskeyRegistrationAfterSignup = ({ passwordless, hasExistingPasskeys }: SignUpContext): boolean => {
+  const { passkeyRegistrationPrompts } = passwordless || {}
+
+  if (!passkeyRegistrationPrompts) {
+    return false
+  }
+
+  // Don't prompt if user already has passkeys
+  if (hasExistingPasskeys) {
+    return false
+  }
+
+  if (typeof passkeyRegistrationPrompts === 'boolean') {
+    return passkeyRegistrationPrompts
+  }
+
+  return passkeyRegistrationPrompts.afterSignup === 'ALWAYS'
+}
+
+export const hasPasskeyRegistrationPrompts = (passwordless: PasswordlessSettings | undefined): boolean => {
+  return !!passwordless?.passkeyRegistrationPrompts
+}
+
+export const shouldReturnToSelectMethod = ({ selectedAuthMethod, step }: SignInContext): boolean => {
+  return !!selectedAuthMethod && step === 'SELECT_AUTH_METHOD'
 }

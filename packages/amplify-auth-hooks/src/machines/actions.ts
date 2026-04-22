@@ -11,11 +11,13 @@ import type { AuthVerifiableAttributeKey } from '@aws-amplify/core/internals/uti
 import type {
   AuthEvent,
   AuthEventData,
+  AuthMethod,
   AuthMFAType,
   AuthTOTPSetupDetails,
   ResetPasswordStep,
   SignInContext,
   SignInStep,
+  SignUpContext,
   SignUpStep,
 } from '~/types/machines'
 import type { UnverifiedUserAttributes } from '~/types/user'
@@ -71,15 +73,18 @@ const setCodeDeliveryDetails = ({ event }: ActionParams): CodeDeliveryDetails<Us
   return output as CodeDeliveryDetails<UserAttributeKey>
 }
 
-const setUnverifiedUserAttributes = ({ event }: ActionParams): UnverifiedUserAttributes => {
+const setUnverifiedUserAttributes = ({ context, event }: ActionParams<SignInContext | SignUpContext>): UnverifiedUserAttributes => {
   const { email, phone_number } = event.output as FetchUserAttributesOutput
+  // Use fetchedUserAttributes from context if data is not provided
+  const attributes = event.output || context.fetchedUserAttributes
+  if (!attributes) {
+    return {}
+  }
 
-  const unverifiedUserAttributes = {
+  return {
     ...(email && { email }),
     ...(phone_number && { phone_number }),
   }
-
-  return unverifiedUserAttributes
 }
 
 const setSelectedUserAttribute = ({ event }: ActionParams): AuthVerifiableAttributeKey | undefined => {
@@ -101,14 +106,28 @@ const setSignInActorDoneData = ({ event }: ActionParams<SignInContext>): SignInC
   }
 }
 
+// Passwordless actions
+const setSelectedAuthMethod = ({ event }: ActionParams): AuthMethod | undefined => event.data?.method
+
+const setFetchedUserAttributes = ({ event }: ActionParams): Record<string, unknown> => {
+  return event.output as FetchUserAttributesOutput
+}
+
+const setHasExistingPasskeys = ({ event }: ActionParams): boolean => {
+  return (event?.output as unknown as boolean) ?? false
+}
+
 export {
   setAllowedMfaTypes,
   setCodeDeliveryDetails,
+  setFetchedUserAttributes,
+  setHasExistingPasskeys,
   setMissingAttributes,
   setNextResetPasswordStep,
   setNextSignInStep,
   setNextSignUpStep,
   setRemoteError,
+  setSelectedAuthMethod,
   setSelectedUserAttribute,
   setSignInActorDoneData,
   setTotpSecretCode,

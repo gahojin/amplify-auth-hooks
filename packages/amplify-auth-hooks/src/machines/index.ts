@@ -107,6 +107,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
         entry: 'clearActorDoneData',
         on: {
           FORGOT_PASSWORD: { target: '#authenticator.forgotPasswordActor' },
+          SHOW_AUTH_METHODS: { actions: 'forwardToActor' },
           SIGN_UP: { target: '#authenticator.signUpActor' },
           SIGN_IN: { actions: 'forwardToActor' },
           FEDERATED_SIGN_IN: { actions: 'forwardToActor' },
