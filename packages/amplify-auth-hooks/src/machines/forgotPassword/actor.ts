@@ -28,6 +28,7 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
       sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
       setSignInStep: assign({ step: 'SIGN_IN' }),
       setNextResetPasswordStep: assign({ step: setNextResetPasswordStep }),
+      setSelectAuthMethodStep: assign({ step: 'SELECT_AUTH_METHOD' }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
