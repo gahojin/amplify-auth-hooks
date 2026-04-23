@@ -10,7 +10,16 @@ import type {
   SignUpOutput,
 } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setNextSignUpStep, setRemoteError, setUnverifiedUserAttributes, setUsername } from '~/machines/actions'
+import {
+  setAllowedMfaTypes,
+  setCodeDeliveryDetails,
+  setNextSignInStep,
+  setNextSignUpStep,
+  setRemoteError,
+  setTotpSecretCode,
+  setUnverifiedUserAttributes,
+  setUsername,
+} from '~/machines/actions'
 import {
   hasCompletedSignIn,
   hasCompletedSignUp,
@@ -18,6 +27,7 @@ import {
   shouldAutoSignIn,
   shouldConfirmSignInWithNewPassword,
   shouldConfirmSignUpFromSignIn,
+  shouldManualSignIn,
   shouldResetPasswordFromSignIn,
   shouldVerifyAttribute,
 } from '~/machines/guards'
@@ -42,6 +52,7 @@ export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpC
       hasCompletedSignUp: ({ event }) => hasCompletedSignUp(event),
       isUserAlreadyConfirmed: ({ event }) => isUserAlreadyConfirmed(event),
       shouldAutoSignIn: ({ event }) => shouldAutoSignIn(event),
+      shouldManualSignIn: ({ context, event }) => shouldManualSignIn(context, event),
       shouldConfirmSignInWithNewPassword: ({ event }) => shouldConfirmSignInWithNewPassword(event),
       shouldConfirmSignUp: ({ context: { step } }) => step === 'CONFIRM_SIGN_UP',
       shouldConfirmSignUpFromSignIn: ({ event }) => shouldConfirmSignUpFromSignIn(event),
@@ -61,8 +72,12 @@ export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpC
       sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
       setShouldVerifyUserAttributeStep: assign({ step: 'SHOULD_CONFIRM_USER_ATTRIBUTE', unverifiedUserAttributes: setUnverifiedUserAttributes }),
       setConfirmAttributeCompleteStep: assign({ step: 'CONFIRM_ATTRIBUTE_COMPLETE' }),
+      setSignInStep: assign({ step: 'SIGN_IN' }),
       setNextSignUpStep: assign({ step: setNextSignUpStep }),
+      setNextSignInStep: assign({ step: setNextSignInStep }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
+      setTotpSecretCode: assign({ totpSecretCode: setTotpSecretCode }),
+      setAllowedMfaTypes: assign({ allowedMfaTypes: setAllowedMfaTypes }),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
       clearError: assign({ remoteError: undefined }),
@@ -80,11 +95,11 @@ export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpC
         invoke: {
           src: 'autoSignIn',
           onDone: [
-            { guard: 'hasCompletedSignIn', target: '#signUpActor.fetchUserAttributes' },
-            { guard: 'shouldConfirmSignInWithNewPassword', target: '#signUpActor.resolved' },
-            { guard: 'shouldResetPasswordFromSignIn', target: '#signUpActor.resetPassword' },
-            { guard: 'shouldConfirmSignUpFromSignIn', target: '#signUpActor.resendSignUpCode' },
-            { target: '#signUpActor.resolved' },
+            { guard: 'hasCompletedSignIn', actions: 'setNextSignInStep', target: '#signUpActor.fetchUserAttributes' },
+            { guard: 'shouldConfirmSignInWithNewPassword', actions: 'setNextSignInStep', target: '#signUpActor.resolved' },
+            { guard: 'shouldResetPasswordFromSignIn', actions: 'setNextSignInStep', target: '#signUpActor.resetPassword' },
+            { guard: 'shouldConfirmSignUpFromSignIn', actions: 'setNextSignInStep', target: '#signUpActor.resendSignUpCode' },
+            { actions: ['setNextSignInStep', 'setTotpSecretCode', 'setAllowedMfaTypes'], target: '#signUpActor.resolved' },
           ],
           onError: { target: '#signUpActor.resolved' },
         },
@@ -178,8 +193,8 @@ export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpC
               src: 'confirmSignUp',
               input: ({ context: { username }, event }) => ({ username, ...event.data }) as ConfirmSignUpInput,
               onDone: [
-                { guard: 'hasCompletedSignUp', actions: 'setNextSignUpStep', target: '#signUpActor.resolved' },
                 { guard: 'shouldAutoSignIn', actions: 'setNextSignUpStep', target: '#signUpActor.autoSignIn' },
+                { guard: 'shouldManualSignIn', actions: 'setSignInStep', target: '#signUpActor.resolved' },
                 { actions: 'setNextSignUpStep', target: '#signUpActor.init' },
               ],
               onError: { actions: 'setRemoteError', target: 'idle' },

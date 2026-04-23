@@ -10,7 +10,7 @@
  */
 
 import type { FetchUserAttributesOutput, ResetPasswordOutput, SignInOutput, SignUpOutput } from '@aws-amplify/auth'
-import type { AuthEvent, ResetPasswordContext, Step } from '~/types/machines'
+import type { AuthEvent, ResetPasswordContext, SignUpContext, Step } from '~/types/machines'
 
 const SIGN_IN_STEP_MFA_CONFIRMATION: Step[] = ['CONFIRM_SIGN_IN_WITH_SMS_CODE', 'CONFIRM_SIGN_IN_WITH_TOTP_CODE', 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE']
 
@@ -32,6 +32,11 @@ export const shouldConfirmSignUpFromSignIn = (event: AuthEvent): boolean => {
 export const shouldAutoSignIn = (event: AuthEvent): boolean => {
   const output = event.output as SignUpOutput
   return output?.nextStep?.signUpStep === 'COMPLETE_AUTO_SIGN_IN'
+}
+
+export const shouldManualSignIn = (context: SignUpContext, event: AuthEvent): boolean => {
+  const output = event.output as SignUpOutput
+  return output?.nextStep?.signUpStep === 'DONE' && context.step === 'CONFIRM_SIGN_UP'
 }
 
 export const hasCompletedSignIn = (event: AuthEvent): boolean => {
@@ -109,11 +114,11 @@ export const shouldVerifyAttribute = (event: AuthEvent): boolean => {
   }
 
   // email/phone_verified is returned as a string
-  const emailVerified = email_verified === 'true'
-  const phoneVerified = phone_number_verified === 'true'
+  const emailNotVerified = email_verified === undefined || email_verified === 'false'
+  const phoneNotVerified = phone_number_verified === undefined || phone_number_verified === 'false'
 
   // only request verification if both email and phone are not verified
-  return !emailVerified && !phoneVerified
+  return emailNotVerified && phoneNotVerified
 }
 
 export const isUserAlreadyConfirmed = (event: AuthEvent): boolean => {

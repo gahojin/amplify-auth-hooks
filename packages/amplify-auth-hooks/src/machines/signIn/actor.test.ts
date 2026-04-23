@@ -37,10 +37,10 @@ describe('signInActor', () => {
 
     expect(actor.getSnapshot().value).toStrictEqual({ signIn: 'idle' })
 
-    actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword, email: mockEmail } })
+    actor.send({ type: 'SUBMIT', data: { username: mockUsername, password: mockPassword } })
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('resolved')
-    expect(signIn).toHaveBeenCalledWith({ email: mockEmail, password: mockPassword, username: mockUsername })
+    expect(signIn).toHaveBeenCalledWith({ username: mockUsername, password: mockPassword })
   })
 
   it('フェデレーションサインイン', async () => {
