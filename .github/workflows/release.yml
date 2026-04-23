@@ -22,6 +22,7 @@ jobs:
     strategy:
       matrix:
         node-version: [24]
+        npm-version: [11]
 
     steps:
       - name: Checkout
@@ -46,9 +47,11 @@ jobs:
         run: curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh -s -- --ci
 
       - name: Install latest npm
+        env:
+          NPM_VERSION: ${{ matrix.npm-version }}
         run: |
           echo "Current npm version: $(npm -v)"
-          npm install -g npm@latest
+          npm install -g npm@$TARGET_NPM_VERSION
           echo "Updated npm version: $(npm -v)"
 
       - name: Install dependencies
