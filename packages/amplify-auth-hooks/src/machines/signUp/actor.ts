@@ -59,10 +59,10 @@ export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpC
     },
     actions: {
       sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
-      setShouldVerifyUserAttributeStep: assign({ unverifiedUserAttributes: setUnverifiedUserAttributes }),
+      setShouldVerifyUserAttributeStep: assign({ step: 'SHOULD_CONFIRM_USER_ATTRIBUTE', unverifiedUserAttributes: setUnverifiedUserAttributes }),
       setConfirmAttributeCompleteStep: assign({ step: 'CONFIRM_ATTRIBUTE_COMPLETE' }),
-      setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setNextSignUpStep: assign({ step: setNextSignUpStep }),
+      setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
       clearError: assign({ remoteError: undefined }),
@@ -95,7 +95,7 @@ export const signUpActor = (handlers: SignUpHandlers, overridesContext?: SignUpC
           onDone: [
             {
               guard: 'shouldVerifyAttribute',
-              actions: ['setShouldVerifyUserAttributeStep', 'setConfirmAttributeCompleteStep'],
+              actions: 'setShouldVerifyUserAttributeStep',
               target: '#signUpActor.resolved',
             },
             { actions: 'setConfirmAttributeCompleteStep', target: '#signUpActor.resolved' },
