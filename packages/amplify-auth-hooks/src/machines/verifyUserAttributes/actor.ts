@@ -1,6 +1,6 @@
 import type { ConfirmUserAttributeInput, SendUserAttributeVerificationCodeInput, SendUserAttributeVerificationCodeOutput } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setConfirmAttributeCompleteStep, setRemoteError, setSelectedUserAttribute } from '~/machines/actions'
+import { setCodeDeliveryDetails, setRemoteError, setSelectedUserAttribute } from '~/machines/actions'
 import type { AuthEvent, Handlers, VerifyUserContext } from '~/types/machines'
 
 type VerifyUserAttributesHandlers = Pick<Handlers, 'sendUserAttributeVerificationCode' | 'confirmUserAttribute'>
@@ -23,12 +23,12 @@ export const verifyUserAttributesActor = (handlers: VerifyUserAttributesHandlers
     },
     actions: {
       sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
+      setConfirmAttributeCompleteStep: assign({ step: 'CONFIRM_ATTRIBUTE_COMPLETE' }),
       setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setSelectedUserAttribute: assign({ selectedUserAttribute: setSelectedUserAttribute }),
-      setConfirmAttributeCompleteStep: assign({ step: setConfirmAttributeCompleteStep }),
+      clearSelectedUserAttribute: assign({ selectedUserAttribute: undefined }),
       setRemoteError: assign({ remoteError: setRemoteError }),
       clearError: assign({ remoteError: undefined }),
-      clearSelectedUserAttribute: assign({ selectedUserAttribute: undefined }),
     },
   }).createMachine({
     id: 'vefiryUserAttributesActor',

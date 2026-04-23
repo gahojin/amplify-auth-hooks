@@ -1,6 +1,6 @@
 import type { ConfirmResetPasswordInput, ResetPasswordInput, ResetPasswordOutput } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setNextResetPasswordStep, setNextSignInStep, setRemoteError, setUsername } from '~/machines/actions'
+import { setCodeDeliveryDetails, setNextResetPasswordStep, setRemoteError, setUsername } from '~/machines/actions'
 import { hasCompletedResetPassword, shouldConfirmResetPassword, shouldResetPassword } from '~/machines/guards'
 import type { AuthEvent, Handlers, ResetPasswordContext } from '~/types/machines'
 
@@ -26,9 +26,9 @@ export const forgotPasswordActor = (handlers: ForgotPasswordHandlers, overridesC
     },
     actions: {
       sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
-      setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
+      setSignInStep: assign({ step: 'SIGN_IN' }),
       setNextResetPasswordStep: assign({ step: setNextResetPasswordStep }),
-      setSignInStep: assign({ step: setNextSignInStep }),
+      setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
       clearError: assign({ remoteError: undefined }),

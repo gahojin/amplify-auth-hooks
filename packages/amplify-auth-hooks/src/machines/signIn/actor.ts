@@ -13,10 +13,8 @@ import { assign, fromPromise, sendParent, setup } from 'xstate'
 import {
   setAllowedMfaTypes,
   setCodeDeliveryDetails,
-  setConfirmSignUpStep,
   setNextSignInStep,
   setRemoteError,
-  setShouldVerifyUserAttributeStep,
   setSignInActorDoneData,
   setTotpSecretCode,
   setUnverifiedUserAttributes,
@@ -48,6 +46,8 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       events: {} as AuthEvent,
     },
     guards: {
+      hasCompletedSignIn: ({ event }) => hasCompletedSignIn(event),
+      isShouldConfirmSignInWithNewPassword: ({ context: { step } }) => isShouldConfirmSignInWithNewPassword(step),
       shouldConfirmSignIn: ({ context: { step } }) => shouldConfirmSignIn(step),
       shouldSetupTotp: ({ context: { step } }) => shouldSetupTotp(step),
       shouldSetupEmail: ({ context: { step } }) => shouldSetupEmail(step),
@@ -56,8 +56,6 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
       shouldConfirmSignInWithNewPassword: ({ event }) => shouldConfirmSignInWithNewPassword(event),
       shouldResetPasswordFromSignIn: ({ event }) => shouldResetPasswordFromSignIn(event),
       shouldConfirmSignUpFromSignIn: ({ event }) => shouldConfirmSignUpFromSignIn(event),
-      hasCompletedSignIn: ({ event }) => hasCompletedSignIn(event),
-      isShouldConfirmSignInWithNewPassword: ({ context: { step } }) => isShouldConfirmSignInWithNewPassword(step),
     },
     actors: {
       fetchUserAttributes: fromPromise(() => handlers.fetchUserAttributes()),
@@ -69,14 +67,13 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
     },
     actions: {
       sendUpdate: sendParent({ type: 'CHILD_CHANGED' }),
-      setShouldVerifyUserAttributeStep: assign({ step: setShouldVerifyUserAttributeStep }),
-      setUnverifiedUserAttributes: assign({ unverifiedUserAttributes: setUnverifiedUserAttributes }),
-      setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
+      setShouldVerifyUserAttributeStep: assign({ step: 'SHOULD_CONFIRM_USER_ATTRIBUTE', unverifiedUserAttributes: setUnverifiedUserAttributes }),
       setConfirmAttributeCompleteStep: assign({ step: 'CONFIRM_ATTRIBUTE_COMPLETE' }),
+      setConfirmSignUpStep: assign({ step: 'CONFIRM_SIGN_UP' }),
+      setNextSignInStep: assign({ step: setNextSignInStep }),
+      setCodeDeliveryDetails: assign({ codeDeliveryDetails: setCodeDeliveryDetails }),
       setTotpSecretCode: assign({ totpSecretCode: setTotpSecretCode }),
       setAllowedMfaTypes: assign({ allowedMfaTypes: setAllowedMfaTypes }),
-      setNextSignInStep: assign({ step: setNextSignInStep }),
-      setConfirmSignUpStep: assign({ step: setConfirmSignUpStep }),
       setActorDoneData: assign(setSignInActorDoneData),
       setUsername: assign({ username: setUsername }),
       setRemoteError: assign({ remoteError: setRemoteError }),
@@ -147,7 +144,7 @@ export const signInActor = (handlers: SignInHandlers, overridesContext?: SignInC
           onDone: [
             {
               guard: 'shouldVerifyAttribute',
-              actions: ['setShouldVerifyUserAttributeStep', 'setUnverifiedUserAttributes'],
+              actions: 'setShouldVerifyUserAttributeStep',
               target: '#signInActor.resolved',
             },
             { actions: 'setConfirmAttributeCompleteStep', target: '#signInActor.resolved' },

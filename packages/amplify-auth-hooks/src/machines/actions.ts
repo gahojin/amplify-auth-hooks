@@ -17,9 +17,8 @@ import type {
   SignInContext,
   SignInStep,
   SignUpStep,
-  Step,
-  UnverifiedUserAttributes,
 } from '~/types/machines'
+import type { UnverifiedUserAttributes } from '~/types/user'
 
 type ActionParams<Context = unknown> = {
   context: Context
@@ -34,14 +33,6 @@ const setTotpSecretCode = ({ event }: ActionParams): string | undefined => {
 const setAllowedMfaTypes = ({ event }: ActionParams): AuthMFAType[] | undefined => {
   return event.output?.nextStep?.allowedMFATypes as AuthMFAType[]
 }
-
-const setSignInStep: Step = 'SIGN_IN'
-
-const setShouldVerifyUserAttributeStep: Step = 'SHOULD_CONFIRM_USER_ATTRIBUTE'
-
-const setConfirmAttributeCompleteStep: Step = 'CONFIRM_ATTRIBUTE_COMPLETE'
-
-const setConfirmSignUpStep: Step = 'CONFIRM_SIGN_UP'
 
 const setNextSignInStep = ({ event }: ActionParams): SignInStep => {
   const output = (event.output ?? {}) as SignInOutput
@@ -113,17 +104,13 @@ const setSignInActorDoneData = ({ event }: ActionParams<SignInContext>): SignInC
 export {
   setAllowedMfaTypes,
   setCodeDeliveryDetails,
-  setConfirmAttributeCompleteStep,
-  setConfirmSignUpStep,
   setMissingAttributes,
   setNextResetPasswordStep,
   setNextSignInStep,
   setNextSignUpStep,
   setRemoteError,
   setSelectedUserAttribute,
-  setShouldVerifyUserAttributeStep,
   setSignInActorDoneData,
-  setSignInStep,
   setTotpSecretCode,
   setUnverifiedUserAttributes,
   setUser,
