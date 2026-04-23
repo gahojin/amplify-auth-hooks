@@ -1,5 +1,6 @@
 import type { AuthUser, CodeDeliveryDetails } from '@aws-amplify/auth'
-import type { AuthAllowedMFATypes, AuthEventData, NavigableRoute, UnverifiedUserAttributes } from './machines'
+import type { UnverifiedUserAttributes } from '~/types/user'
+import type { AuthAllowedMFATypes, AuthEventData, NavigableRoute } from './machines'
 
 export type AuthenticatorRoute =
   | 'authenticated'
@@ -28,15 +29,15 @@ export type UseAuthenticatorSelector = (context: AuthenticatorServiceFacade) => 
 export type UseAuthenticator = AuthenticatorServiceFacade
 
 export type AuthenticatorServiceContextFacade = {
-  allowedMfaTypes: AuthAllowedMFATypes | undefined
-  codeDeliveryDetails: CodeDeliveryDetails | undefined
-  errorMessage: string | undefined
+  allowedMfaTypes?: AuthAllowedMFATypes
+  codeDeliveryDetails?: CodeDeliveryDetails
+  errorMessage?: string
   isPending: boolean
   route: AuthenticatorRoute | null
-  totpSecretCode: string | undefined
-  username: string | undefined
-  user: AuthUser | undefined
-  unverifiedUserAttributes: UnverifiedUserAttributes | undefined
+  totpSecretCode?: string
+  username?: string
+  user?: AuthUser
+  unverifiedUserAttributes?: UnverifiedUserAttributes
 }
 
 export type AuthenticatorSendEventAliases = {

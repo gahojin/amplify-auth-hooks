@@ -18,8 +18,8 @@ import type {
   SignInStep,
   SignUpStep,
   Step,
-  UnverifiedUserAttributes,
 } from '~/types/machines'
+import type { UnverifiedUserAttributes } from '~/types/user'
 
 type ActionParams<Context = unknown> = {
   context: Context
