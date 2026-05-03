@@ -1,1 +1,1 @@
-export { listenToAuthHub } from './defaultAuthHubHandler'
+export { listenToAuthHub } from './defaultAuthHubHandler.js'

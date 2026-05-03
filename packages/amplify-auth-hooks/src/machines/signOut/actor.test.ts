@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
-import { signOutActor } from './actor'
+import { signOutActor } from './actor.js'
 
 const flushPromises = () => new Promise(setImmediate)
 

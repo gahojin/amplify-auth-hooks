@@ -1,7 +1,7 @@
 import type { AnyMachineSnapshot, SnapshotFrom } from 'xstate'
-import type { AuthActor } from '~/types/authenticator'
-import type { AuthenticatorRoute, AuthenticatorSendEventAliases, AuthenticatorServiceContextFacade } from '~/types/hooks'
-import type { AuthActorContext, AuthEvent, AuthEventTypes, NavigableRoute } from '~/types/machines'
+import type { AuthActor } from '~/types/authenticator.js'
+import type { AuthenticatorRoute, AuthenticatorSendEventAliases, AuthenticatorServiceContextFacade } from '~/types/hooks.js'
+import type { AuthActorContext, AuthEvent, AuthEventTypes, NavigableRoute } from '~/types/machines.js'
 
 const NAVIGABLE_ROUTE_EVENT: Record<NavigableRoute, AuthEventTypes> = {
   forgotPassword: 'FORGOT_PASSWORD',

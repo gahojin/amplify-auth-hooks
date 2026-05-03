@@ -17,8 +17,8 @@ import type {
   SignInContext,
   SignInStep,
   SignUpStep,
-} from '~/types/machines'
-import type { UnverifiedUserAttributes } from '~/types/user'
+} from '~/types/machines.js'
+import type { UnverifiedUserAttributes } from '~/types/user.js'
 
 type ActionParams<Context = unknown> = {
   context: Context

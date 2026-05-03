@@ -1,8 +1,8 @@
 import type { ConfirmResetPasswordInput, ResetPasswordInput, ResetPasswordOutput } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setNextResetPasswordStep, setRemoteError, setUsername } from '~/machines/actions'
-import { hasCompletedResetPassword, shouldConfirmResetPassword, shouldResetPassword } from '~/machines/guards'
-import type { AuthEvent, Handlers, ResetPasswordContext } from '~/types/machines'
+import { setCodeDeliveryDetails, setNextResetPasswordStep, setRemoteError, setUsername } from '~/machines/actions.js'
+import { hasCompletedResetPassword, shouldConfirmResetPassword, shouldResetPassword } from '~/machines/guards.js'
+import type { AuthEvent, Handlers, ResetPasswordContext } from '~/types/machines.js'
 
 type ForgotPasswordHandlers = Pick<Handlers, 'resetPassword' | 'confirmResetPassword'>
 

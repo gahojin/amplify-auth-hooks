@@ -34,16 +34,16 @@
       "import": "./dist/index.js"
     },
     "./machines": {
-      "types": "./dist/machines.d.ts",
+      "types": "./dist/machines/index.d.ts",
       "import": "./dist/machines.js"
     },
     "./authenticator": {
-      "types": "./dist/authenticator.d.ts",
+      "types": "./dist/authenticator/index.d.ts",
       "import": "./dist/authenticator.js"
     }
   },
   "scripts": {
-    "build": "rolldown -c",
+    "build": "vite build",
     "prepublishOnly": "pnpm run build",
     "lint": "biome check --write .",
     "lint:ci": "biome ci .",

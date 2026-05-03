@@ -19,7 +19,7 @@ import {
   setTotpSecretCode,
   setUnverifiedUserAttributes,
   setUsername,
-} from '~/machines/actions'
+} from '~/machines/actions.js'
 import {
   hasCompletedSignIn,
   hasCompletedSignUp,
@@ -30,8 +30,8 @@ import {
   shouldManualSignIn,
   shouldResetPasswordFromSignIn,
   shouldVerifyAttribute,
-} from '~/machines/guards'
-import type { AuthEvent, Handlers, SignUpContext } from '~/types/machines'
+} from '~/machines/guards.js'
+import type { AuthEvent, Handlers, SignUpContext } from '~/types/machines.js'
 
 type SignUpHandlers = Pick<
   Handlers,

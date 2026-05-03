@@ -4,8 +4,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "isolatedDeclarations": true,
     "outDir": "dist",
+    "rootDir": "src",
     "lib": ["ES2022", "DOM"],
     "types": ["@types/node", "vitest/globals", "jest-extended"],
     "paths": {

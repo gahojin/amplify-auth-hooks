@@ -33,7 +33,7 @@ import type {
   SignUpOutput,
   UserAttributeKey,
 } from '@aws-amplify/auth'
-import type { UnverifiedUserAttributes } from '~/types/user'
+import type { UnverifiedUserAttributes } from '~/types/user.js'
 
 export type AuthMFAType = 'SMS' | 'TOTP' | 'EMAIL'
 export type AuthAllowedMFATypes = AuthMFAType[]
