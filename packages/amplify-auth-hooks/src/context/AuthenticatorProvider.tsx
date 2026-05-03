@@ -1,9 +1,9 @@
 import { useActor } from '@xstate/react'
 import { type JSX, type PropsWithChildren, useContext, useEffect, useMemo } from 'react'
-import { defaultAuthHubHandler, listenToAuthHub } from '~/authenticator/defaultAuthHubHandler'
-import { AuthenticatorContext } from '~/context/AuthenticatorContext'
-import { type AuthenticatorMachineOptions, createAuthenticatorMachine } from '~/machines'
-import type { AuthMachineHubHandler, AuthMachineHubHandlerOptions } from '~/types/authenticator'
+import { defaultAuthHubHandler, listenToAuthHub } from '~/authenticator/defaultAuthHubHandler.js'
+import { AuthenticatorContext } from '~/context/AuthenticatorContext.js'
+import { type AuthenticatorMachineOptions, createAuthenticatorMachine } from '~/machines/index.js'
+import type { AuthMachineHubHandler, AuthMachineHubHandlerOptions } from '~/types/authenticator.js'
 
 const createHubHandler = (options?: AuthMachineHubHandlerOptions): AuthMachineHubHandler => {
   return (data, service) => defaultAuthHubHandler(data, service, options)

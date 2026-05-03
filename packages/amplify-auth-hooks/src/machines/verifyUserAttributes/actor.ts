@@ -1,7 +1,7 @@
 import type { ConfirmUserAttributeInput, SendUserAttributeVerificationCodeInput, SendUserAttributeVerificationCodeOutput } from '@aws-amplify/auth'
 import { assign, fromPromise, sendParent, setup } from 'xstate'
-import { setCodeDeliveryDetails, setRemoteError, setSelectedUserAttribute } from '~/machines/actions'
-import type { AuthEvent, Handlers, VerifyUserContext } from '~/types/machines'
+import { setCodeDeliveryDetails, setRemoteError, setSelectedUserAttribute } from '~/machines/actions.js'
+import type { AuthEvent, Handlers, VerifyUserContext } from '~/types/machines.js'
 
 type VerifyUserAttributesHandlers = Pick<Handlers, 'sendUserAttributeVerificationCode' | 'confirmUserAttribute'>
 

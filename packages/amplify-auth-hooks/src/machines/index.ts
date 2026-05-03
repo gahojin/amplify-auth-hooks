@@ -1,20 +1,20 @@
 import type { AuthUser } from '@aws-amplify/auth'
 import { assign, forwardTo, fromPromise, setup } from 'xstate'
-import { signInActor } from '~/machines/signIn/actor'
-import type { AuthMachineHubHandlerOptions } from '~/types/authenticator'
-import type { ActorDoneData, AuthContext, AuthEvent, Handlers } from '~/types/machines'
-import { defaultHandlers } from './defaultHandlers'
-import { forgotPasswordActor } from './forgotPassword/actor'
+import { signInActor } from '~/machines/signIn/actor.js'
+import type { AuthMachineHubHandlerOptions } from '~/types/authenticator.js'
+import type { ActorDoneData, AuthContext, AuthEvent, Handlers } from '~/types/machines.js'
+import { defaultHandlers } from './defaultHandlers.js'
+import { forgotPasswordActor } from './forgotPassword/actor.js'
 import {
   hasCompletedAttributeConfirmation,
   isConfirmSignUpStep,
   isConfirmUserAttributeStep,
   isResetPasswordStep,
   isShouldConfirmUserAttributeStep,
-} from './guards'
-import { signOutActor } from './signOut/actor'
-import { signUpActor } from './signUp/actor'
-import { verifyUserAttributesActor } from './verifyUserAttributes/actor'
+} from './guards.js'
+import { signOutActor } from './signOut/actor.js'
+import { signUpActor } from './signUp/actor.js'
+import { verifyUserAttributesActor } from './verifyUserAttributes/actor.js'
 
 export type AuthenticatorMachineOptions = AuthContext['config'] & {
   handlers?: Partial<Handlers>

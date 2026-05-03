@@ -1,7 +1,7 @@
 import type { AuthUser } from '@aws-amplify/auth'
 import type { HubCapsule } from '@aws-amplify/core'
 import type { ActorRefFrom } from 'xstate'
-import type { createAuthenticatorMachineReturnType } from '~/machines'
+import type { createAuthenticatorMachineReturnType } from '~/machines/index.js'
 
 export type AuthActor = ActorRefFrom<createAuthenticatorMachineReturnType>
 

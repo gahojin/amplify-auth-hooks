@@ -8,8 +8,8 @@ import type {
 } from '@aws-amplify/auth'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
-import type { Step } from '~/types/machines'
-import { signInActor } from './actor'
+import type { Step } from '~/types/machines.js'
+import { signInActor } from './actor.js'
 
 const flushPromises = () => new Promise(setImmediate)
 

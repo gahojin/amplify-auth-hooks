@@ -19,7 +19,7 @@ import {
   setTotpSecretCode,
   setUnverifiedUserAttributes,
   setUsername,
-} from '~/machines/actions'
+} from '~/machines/actions.js'
 import {
   hasCompletedSignIn,
   isShouldConfirmSignInWithNewPassword,
@@ -31,8 +31,8 @@ import {
   shouldSetupEmail,
   shouldSetupTotp,
   shouldVerifyAttribute,
-} from '~/machines/guards'
-import type { AuthEvent, Handlers, SignInContext } from '~/types/machines'
+} from '~/machines/guards.js'
+import type { AuthEvent, Handlers, SignInContext } from '~/types/machines.js'
 
 type SignInHandlers = Pick<Handlers, 'confirmSignIn' | 'fetchUserAttributes' | 'resetPassword' | 'signIn' | 'signInWithRedirect' | 'resendSignUpCode'>
 

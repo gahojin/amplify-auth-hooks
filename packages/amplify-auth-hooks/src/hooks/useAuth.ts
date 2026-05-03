@@ -12,7 +12,7 @@
 import { type AuthUser, getCurrentUser } from '@aws-amplify/auth'
 import { Hub, type HubCallback } from '@aws-amplify/core'
 import { useCallback, useEffect, useState } from 'react'
-import type { Handlers } from '~/types/machines'
+import type { Handlers } from '~/types/machines.js'
 
 export type UseAuthResult = {
   user?: AuthUser

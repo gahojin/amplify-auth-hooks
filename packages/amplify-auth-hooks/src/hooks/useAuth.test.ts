@@ -1,7 +1,7 @@
 import { type AuthUser, getCurrentUser } from '@aws-amplify/auth'
 import { renderHook, waitFor } from '@testing-library/react'
 import { describe, it } from 'vitest'
-import { useAuth } from './useAuth'
+import { useAuth } from './useAuth.js'
 
 // 呼び出し確認のため、aws-amplifyをモック化する
 vi.mock('@aws-amplify/auth')

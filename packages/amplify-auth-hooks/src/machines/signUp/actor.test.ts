@@ -1,7 +1,7 @@
 import type { ConfirmSignUpOutput, SignUpOutput } from '@aws-amplify/auth'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
-import { signUpActor } from './actor'
+import { signUpActor } from './actor.js'
 
 const flushPromises = () => new Promise(setImmediate)
 

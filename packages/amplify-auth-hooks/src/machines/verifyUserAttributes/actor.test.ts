@@ -1,7 +1,7 @@
 import type { SendUserAttributeVerificationCodeOutput } from '@aws-amplify/auth'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
-import { verifyUserAttributesActor } from './actor'
+import { verifyUserAttributesActor } from './actor.js'
 
 const flushPromises = () => new Promise(setImmediate)
 

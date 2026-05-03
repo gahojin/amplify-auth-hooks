@@ -2,8 +2,8 @@ import { Hub } from '@aws-amplify/core'
 import { render, waitFor } from '@testing-library/react'
 import { act } from 'react'
 import { describe, it } from 'vitest'
-import { useAuthenticator } from '~/hooks/useAuthenticator'
-import AuthenticatorProvider from './AuthenticatorProvider'
+import { useAuthenticator } from '~/hooks/useAuthenticator.js'
+import AuthenticatorProvider from './AuthenticatorProvider.js'
 
 // 呼び出し確認のため、aws-amplifyをモック化する
 vi.mock('aws-amplify')
