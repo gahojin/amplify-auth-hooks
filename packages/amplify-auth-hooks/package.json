@@ -57,7 +57,7 @@
     "@aws-amplify/auth": "6.19.1",
     "@aws-amplify/core": "6.16.2",
     "@xstate/react": "6.1.0",
-    "xstate": "5.30.0"
+    "xstate": "5.31.0"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.2",
