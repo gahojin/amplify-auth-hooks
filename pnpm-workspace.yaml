@@ -2,8 +2,8 @@ packages:
   - examples
   - packages/**
 
-ignoredBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: false
 
 overrides:
   fast-xml-parser: '>=5.3.6'
@@ -16,3 +16,6 @@ minimumReleaseAge: 2880
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - 'semver@6.3.1'
+
+# 特殊なソースからの依存関係をインストールしない
+blockExoticSubdeps: true
