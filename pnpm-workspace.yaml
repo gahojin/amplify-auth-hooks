@@ -16,6 +16,7 @@ overrides:
 
 # リリースから一定時間経過していないか、信頼性低下したパッケージはインストールしない
 minimumReleaseAge: 2880
+minimumReleaseAgeIgnoreMissingTime: false
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - 'semver@6.3.1'
