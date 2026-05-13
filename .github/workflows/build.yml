@@ -4,34 +4,22 @@ on:
   workflow_dispatch:
   push:
     branches: ['main']
-    paths:
-      - 'examples/**'
-      - 'packages/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'tsconfig.json'
-      - 'vitest.*.ts'
   pull_request:
-    paths:
-      - 'examples/**'
-      - 'packages/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'tsconfig.json'
-      - 'vitest.*.ts'
+    branches: ['main']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: contains(github.event.head_commit.message, '[skip build]') == false
+
+    permissions:
+      contents: read
 
     strategy:
       matrix:
