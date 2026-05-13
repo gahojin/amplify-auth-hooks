@@ -5,6 +5,9 @@ packages:
 allowBuilds:
   esbuild: false
 
+# 重複排除
+dedupePeers: true
+
 overrides:
   fast-xml-parser: '>=5.3.6'
   '@vitest/expect': $vitest
