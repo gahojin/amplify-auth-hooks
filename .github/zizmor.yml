@@ -1,4 +1,4 @@
 rules:
   excessive-permissions:
     ignore:
-      - osv-scanner-pr.yml:18
+      - osv-scanner.yml:18
