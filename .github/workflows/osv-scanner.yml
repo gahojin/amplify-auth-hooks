@@ -1,4 +1,4 @@
-name: OSV-Scanner PR Scan
+name: OSV-Scanner Scan
 
 on:
   workflow_dispatch:
@@ -26,6 +26,8 @@ jobs:
     with:
       fail-on-vuln: true 
       scan-args: |
+        --recursive
+        ./
         --licenses
 
   scan-full:
