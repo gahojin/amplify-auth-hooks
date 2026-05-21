@@ -7,7 +7,7 @@
     "url": "https://github.com/gahojin/amplify-auth-hooks.git"
   },
   "scripts": {
-    "postinstall": "biome migrate --write",
+    "prepare": "biome migrate --write",
     "build": "turbo run build --filter=!./examples/* --filter=!*props-docs",
     "lint": "turbo run lint",
     "lint:ci": "turbo run lint:ci",
