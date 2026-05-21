@@ -7,7 +7,6 @@ settings:
 
 overrides:
   fast-xml-parser: '>=5.3.6'
-  fflate: 0.8.2
   '@vitest/expect': 4.1.6
   '@vitest/mocker': 4.1.6
   '@vitest/spy': 4.1.6
@@ -223,6 +222,7 @@ packages:
   '@aws-sdk/core@3.974.11':
     resolution: {integrity: sha512-QpnINq5FZH6EOaDEkmHdT7eUunbvD27pDNQypaWjFyYz7Zl1q3UCMQErBZxpmfGfI7MvI2TlK8KTkgNpv8b1ug==}
     engines: {node: '>=20.0.0'}
+    deprecated: Deprecated due to an error deserialization bug in JSON 1.0 protocol services, see https://github.com/aws/aws-sdk-js-v3/pull/8031. Newer version available.
 
   '@aws-sdk/credential-provider-env@3.972.37':
     resolution: {integrity: sha512-/jpPvEh6f7ntmIzf7dNxoNX6Q8vt8UpesCjbW6mFfk4V1NW6bIy9qxcQ6WbA8As5yQhsZOe+xeNd4xHX8kdY2Q==}
@@ -2231,7 +2231,7 @@ snapshots:
       '@aws-crypto/util': 5.2.0
       '@aws-sdk/types': 3.973.8
       '@aws-sdk/util-locate-window': 3.965.5
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
   '@aws-crypto/sha256-js@5.2.0':

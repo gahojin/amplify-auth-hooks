@@ -10,8 +10,6 @@ dedupePeers: true
 
 overrides:
   fast-xml-parser: '>=5.3.6'
-  # @arethetypeswrong/cli がfflateの上流バグのため、動作しないためバージョン固定
-  fflate: '0.8.2'
   '@vitest/expect': $vitest
   '@vitest/mocker': $vitest
   '@vitest/spy': $vitest
