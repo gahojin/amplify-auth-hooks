@@ -29,7 +29,7 @@ importers:
         version: 10.4.1(@types/react@19.2.15)(react@19.2.6)(storybook@10.4.1)
       '@storybook/addon-vitest':
         specifier: 10.4.1
-        version: 10.4.1(@vitest/browser@4.1.7)(@vitest/runner@4.1.7)(react-dom@19.2.6)(react@19.2.6)(storybook@10.4.1)(vitest@4.1.7)
+        version: 10.4.1(@vitest/browser@4.1.8)(@vitest/runner@4.1.7)(react-dom@19.2.6)(react@19.2.6)(storybook@10.4.1)(vitest@4.1.7)
       '@storybook/react-vite':
         specifier: 10.4.1
         version: 10.4.1(@types/react-dom@19.2.3)(@types/react@19.2.15)(esbuild@0.27.7)(react-dom@19.2.6)(react@19.2.6)(storybook@10.4.1)(typescript@6.0.3)(vite@8.0.14)
@@ -46,11 +46,11 @@ importers:
         specifier: 6.0.2
         version: 6.0.2(vite@8.0.14)
       '@vitest/browser':
-        specifier: 4.1.7
-        version: 4.1.7(vite@8.0.14)(vitest@4.1.7)
+        specifier: 4.1.8
+        version: 4.1.8(vite@8.0.14)(vitest@4.1.7)
       '@vitest/coverage-v8':
         specifier: 4.1.6
-        version: 4.1.6(@vitest/browser@4.1.7)(vitest@4.1.7)
+        version: 4.1.6(@vitest/browser@4.1.8)(vitest@4.1.7)
       playwright:
         specifier: 1.60.0
         version: 1.60.0
@@ -1364,10 +1364,10 @@ packages:
       babel-plugin-react-compiler:
         optional: true
 
-  '@vitest/browser@4.1.7':
-    resolution: {integrity: sha512-N2JFGfXoEGVAut+kHeru9dD4BUMq/q5xDvBARNl0tUsly3m5KglLOu8VO/6MkDfOlgxXTycojkt6gBKsuyR+IQ==}
+  '@vitest/browser@4.1.8':
+    resolution: {integrity: sha512-u21VzX07HzlJYpFgkxmjEXar/tG2UqWGgyGG/46SrrPc7rSdCTPw5vuowopO9CIqF8UCUQzDFdbVnNpw6N0BfQ==}
     peerDependencies:
-      vitest: 4.1.7
+      vitest: 4.1.8
 
   '@vitest/coverage-v8@4.1.6':
     resolution: {integrity: sha512-36l628fQ/9a/8ihy97eOtEnvWQEdqULQOJtcaxtoNq0G1w3Mxd4szSahOaMM9/NGyZ+hyKcMtIW/WIxq0XQViQ==}
@@ -1398,6 +1398,9 @@ packages:
   '@vitest/pretty-format@4.1.7':
     resolution: {integrity: sha512-umgCarTOYQWIaDMvGDRZij+6b9oVeLIyJzfN+AS88e0ZOU3QTgNNSTtjQOpcvWr3np1N0j4WgZj+sb3oYBDscw==}
 
+  '@vitest/pretty-format@4.1.8':
+    resolution: {integrity: sha512-9GasEBxpZ1VYIpqHf/0+YGg121uSNwCKOJqIrTwWP/TB7DmFCiaBpNl3aPZzoLWfWkuqhbH8vJIVobZkvdo2cA==}
+
   '@vitest/runner@4.1.7':
     resolution: {integrity: sha512-BapjmAQ2aI78WdMEfeUWivnfVzB+VPGwWRQcJE0OUq7qEeEcBsCSf+0T5iREBNE5nBb4wA5Ya0W6IA+sghdEFw==}
 
@@ -1412,6 +1415,9 @@ packages:
 
   '@vitest/utils@4.1.7':
     resolution: {integrity: sha512-T532WBu791cBxJlCl6SO+J14l81DQx6uQHm1bQbmCDY7nqlEIgkza/UFnSBNaUtSf41unldDFjdOBYEQC4b5Hw==}
+
+  '@vitest/utils@4.1.8':
+    resolution: {integrity: sha512-uOJamYALNhfJ6iolExyQM40yIQwDqYnkKtQ5VCiSe17E33H0aQ/u+1GlRuz4LZBk6Mm3sg90G9hEbmEt37C1Zg==}
 
   '@volar/language-core@2.4.28':
     resolution: {integrity: sha512-w4qhIJ8ZSitgLAkVay6AbcnC7gP3glYM3fYwKV3srj8m494E3xtrCv6E+bWviiK/8hs6e6t1ij1s2Endql7vzQ==}
@@ -3383,13 +3389,13 @@ snapshots:
       '@types/react': 19.2.15
       react: 19.2.6
 
-  '@storybook/addon-vitest@10.4.1(@vitest/browser@4.1.7)(@vitest/runner@4.1.7)(react-dom@19.2.6)(react@19.2.6)(storybook@10.4.1)(vitest@4.1.7)':
+  '@storybook/addon-vitest@10.4.1(@vitest/browser@4.1.8)(@vitest/runner@4.1.7)(react-dom@19.2.6)(react@19.2.6)(storybook@10.4.1)(vitest@4.1.7)':
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/icons': 2.0.2(react-dom@19.2.6)(react@19.2.6)
       storybook: 10.4.1(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6)(react@19.2.6)
     optionalDependencies:
-      '@vitest/browser': 4.1.7(vite@8.0.14)(vitest@4.1.7)
+      '@vitest/browser': 4.1.8(vite@8.0.14)(vitest@4.1.7)
       '@vitest/runner': 4.1.7
       vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.6)(jsdom@29.1.1)(vite@8.0.14)
     transitivePeerDependencies:
@@ -3589,11 +3595,11 @@ snapshots:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.0.14(@types/node@25.9.1)(esbuild@0.27.7)
 
-  '@vitest/browser@4.1.7(vite@8.0.14)(vitest@4.1.7)':
+  '@vitest/browser@4.1.8(vite@8.0.14)(vitest@4.1.7)':
     dependencies:
       '@blazediff/core': 1.9.1
       '@vitest/mocker': 4.1.7(vite@8.0.14)
-      '@vitest/utils': 4.1.7
+      '@vitest/utils': 4.1.8
       magic-string: 0.30.21
       pngjs: 7.0.0
       sirv: 3.0.2
@@ -3606,7 +3612,7 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/coverage-v8@4.1.6(@vitest/browser@4.1.7)(vitest@4.1.7)':
+  '@vitest/coverage-v8@4.1.6(@vitest/browser@4.1.8)(vitest@4.1.7)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.1.6
@@ -3620,7 +3626,7 @@ snapshots:
       tinyrainbow: 3.1.0
       vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.6)(jsdom@29.1.1)(vite@8.0.14)
     optionalDependencies:
-      '@vitest/browser': 4.1.7(vite@8.0.14)(vitest@4.1.7)
+      '@vitest/browser': 4.1.8(vite@8.0.14)(vitest@4.1.7)
 
   '@vitest/expect@4.1.7':
     dependencies:
@@ -3647,6 +3653,10 @@ snapshots:
     dependencies:
       tinyrainbow: 3.1.0
 
+  '@vitest/pretty-format@4.1.8':
+    dependencies:
+      tinyrainbow: 3.1.0
+
   '@vitest/runner@4.1.7':
     dependencies:
       '@vitest/utils': 4.1.7
@@ -3670,6 +3680,12 @@ snapshots:
   '@vitest/utils@4.1.7':
     dependencies:
       '@vitest/pretty-format': 4.1.7
+      convert-source-map: 2.0.0
+      tinyrainbow: 3.1.0
+
+  '@vitest/utils@4.1.8':
+    dependencies:
+      '@vitest/pretty-format': 4.1.8
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
@@ -4523,7 +4539,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.1
-      '@vitest/coverage-v8': 4.1.6(@vitest/browser@4.1.7)(vitest@4.1.7)
+      '@vitest/coverage-v8': 4.1.6(@vitest/browser@4.1.8)(vitest@4.1.7)
       jsdom: 29.1.1
     transitivePeerDependencies:
       - msw
