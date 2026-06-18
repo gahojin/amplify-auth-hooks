@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@gahojin-inc/amplify-auth-hooks": "link:../packages/amplify-auth-hooks",
-    "aws-amplify": "6.17.0",
+    "aws-amplify": "6.18.0",
     "qrcode.react": "4.2.0",
-    "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   }
 }

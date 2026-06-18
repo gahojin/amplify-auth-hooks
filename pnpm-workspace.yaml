@@ -9,6 +9,7 @@ allowBuilds:
 dedupePeers: true
 
 overrides:
+  esbuild: '>=0.28.1'
   fast-xml-parser: '>=5.3.6'
   '@vitest/expect': $vitest
   '@vitest/mocker': $vitest
