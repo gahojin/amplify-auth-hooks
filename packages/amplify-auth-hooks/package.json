@@ -54,15 +54,15 @@
   },
   "dependencies": {
     "@aws-amplify/auth": "6.20.0",
-    "@aws-amplify/core": "6.16.3",
+    "@aws-amplify/core": "6.16.4",
     "@xstate/react": "6.1.0",
-    "xstate": "5.31.1"
+    "xstate": "5.32.0"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.2",
     "jsdom": "29.1.1",
-    "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
   "peerDependencies": {
     "@aws-amplify/auth": "^6",
