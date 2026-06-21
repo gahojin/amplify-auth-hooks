@@ -8,12 +8,20 @@ allowBuilds:
 # 重複排除
 dedupePeers: true
 
+catalog:
+  vitest: 4.1.8
+  '@vitest/browser': 4.1.8
+  '@vitest/coverage-v8': 4.1.8
+  '@vitest/expect': 4.1.8
+  '@vitest/mocker': 4.1.8
+  '@vitest/spy': 4.1.8
+
 overrides:
   esbuild: '>=0.28.1'
   fast-xml-parser: '>=5.3.6'
-  '@vitest/expect': $vitest
-  '@vitest/mocker': $vitest
-  '@vitest/spy': $vitest
+  '@vitest/expect': 'catalog:'
+  '@vitest/mocker': 'catalog:'
+  '@vitest/spy': 'catalog:'
 
 # リリースから一定時間経過していないか、信頼性低下したパッケージはインストールしない
 minimumReleaseAge: 2880 # 2d
