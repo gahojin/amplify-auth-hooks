@@ -9,12 +9,36 @@ allowBuilds:
 dedupePeers: true
 
 catalog:
-  vitest: 4.1.9
-  '@vitest/browser': 4.1.9
-  '@vitest/coverage-v8': 4.1.9
-  '@vitest/expect': 4.1.9
-  '@vitest/mocker': 4.1.9
-  '@vitest/spy': 4.1.9
+  jsdom: 29.1.1
+  playwright: 1.61.1
+  react: &react_ver 19.2.7
+  react-dom: *react_ver
+  storybook: &storybook_ver 10.4.6
+  turbo: 2.9.18
+  typescript: 6.0.3
+  unplugin-dts: 1.0.2
+  vite: 8.1.0
+  vitest: &vitest_ver 4.1.9
+  xstate: 5.32.2
+  '@aws-amplify/auth': 6.20.0
+  '@aws-amplify/core': 6.16.4
+  '@biomejs/biome': 2.5.1
+  '@fast-check/vitest': 0.4.1
+  '@storybook/addon-docs': *storybook_ver
+  '@storybook/addon-links': *storybook_ver
+  '@storybook/addon-vitest': *storybook_ver
+  '@storybook/react-vite': *storybook_ver
+  '@types/node': 25.9.4
+  '@types/react': 19.2.17
+  '@types/react-dom': 19.2.3
+  '@vitejs/plugin-react': 6.0.3
+  '@testing-library/react': 16.3.2
+  '@vitest/browser': *vitest_ver
+  '@vitest/coverage-v8': *vitest_ver
+  '@vitest/expect': *vitest_ver
+  '@vitest/mocker': *vitest_ver
+  '@vitest/spy': *vitest_ver
+  '@xstate/react': 6.1.0
 
 overrides:
   esbuild: '>=0.28.1'
