@@ -43,7 +43,7 @@
     }
   },
   "scripts": {
-    "build": "vite build",
+    "build": "rolldown -c",
     "prepublishOnly": "pnpm run build",
     "lint": "biome check --write",
     "lint:ci": "biome ci",
@@ -53,16 +53,16 @@
     "storybook": "storybook dev -h 127.0.0.1 -p 6006"
   },
   "dependencies": {
-    "@aws-amplify/auth": "6.20.0",
-    "@aws-amplify/core": "6.16.4",
-    "@xstate/react": "6.1.0",
-    "xstate": "5.32.2"
+    "@aws-amplify/auth": "catalog:",
+    "@aws-amplify/core": "catalog:",
+    "@xstate/react": "catalog:",
+    "xstate": "catalog:"
   },
   "devDependencies": {
-    "@testing-library/react": "16.3.2",
-    "jsdom": "29.1.1",
-    "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "@testing-library/react": "catalog:",
+    "jsdom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "peerDependencies": {
     "@aws-amplify/auth": "^6",
