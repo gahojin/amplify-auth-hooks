@@ -16,13 +16,13 @@ catalog:
   rolldown: 1.1.5
   rolldown-plugin-dts: 0.27.7
   storybook: &storybook_ver 10.4.6
-  turbo: 2.9.18
+  turbo: 2.10.4
   typescript: 7.0.2
-  vitest: &vitest_ver 4.1.9
-  xstate: 5.32.2
+  vitest: &vitest_ver 4.1.10
+  xstate: 5.32.4
   '@aws-amplify/auth': 6.20.0
   '@aws-amplify/core': 6.16.4
-  '@biomejs/biome': 2.5.1
+  '@biomejs/biome': 2.5.2
   '@fast-check/vitest': 0.4.1
   '@storybook/addon-docs': *storybook_ver
   '@storybook/addon-links': *storybook_ver
