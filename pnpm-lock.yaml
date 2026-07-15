@@ -55,12 +55,18 @@ catalogs:
     '@xstate/react':
       specifier: 6.1.0
       version: 6.1.0
+    aws-amplify:
+      specifier: 6.18.0
+      version: 6.18.0
     jsdom:
       specifier: 29.1.1
       version: 29.1.1
     playwright:
       specifier: 1.61.1
       version: 1.61.1
+    qrcode.react:
+      specifier: 4.2.0
+      version: 4.2.0
     react:
       specifier: 19.2.7
       version: 19.2.7
@@ -82,6 +88,9 @@ catalogs:
     typescript:
       specifier: 7.0.2
       version: 7.0.2
+    vite:
+      specifier: 8.1.3
+      version: 8.1.3
     vitest:
       specifier: 4.1.10
       version: 4.1.10
@@ -108,7 +117,7 @@ importers:
         version: 0.4.1(vitest@4.1.10)
       '@storybook/addon-docs':
         specifier: 'catalog:'
-        version: 10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)
+        version: 10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)
       '@storybook/addon-links':
         specifier: 'catalog:'
         version: 10.4.6(@types/react@19.2.17)(react@19.2.7)(storybook@10.4.6)
@@ -117,7 +126,7 @@ importers:
         version: 10.4.6(@vitest/browser@4.1.10)(@vitest/runner@4.1.10)(react@19.2.7)(storybook@10.4.6)(vitest@4.1.10)
       '@storybook/react-vite':
         specifier: 'catalog:'
-        version: 10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.7)(react@19.2.7)(storybook@10.4.6)(typescript@7.0.2)(vite@8.1.0)
+        version: 10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.7)(react@19.2.7)(storybook@10.4.6)(typescript@7.0.2)(vite@8.1.3)
       '@types/node':
         specifier: 'catalog:'
         version: 25.9.4
@@ -129,10 +138,10 @@ importers:
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: 'catalog:'
-        version: 6.0.3(vite@8.1.0)
+        version: 6.0.3(vite@8.1.3)
       '@vitest/browser':
         specifier: 'catalog:'
-        version: 4.1.10(vite@8.1.0)(vitest@4.1.10)
+        version: 4.1.10(vite@8.1.3)(vitest@4.1.10)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
@@ -156,7 +165,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: 'catalog:'
-        version: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.0)
+        version: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.3)
 
   examples:
     dependencies:
@@ -164,17 +173,20 @@ importers:
         specifier: link:../packages/amplify-auth-hooks
         version: link:../packages/amplify-auth-hooks
       aws-amplify:
-        specifier: 6.18.0
+        specifier: 'catalog:'
         version: 6.18.0
       qrcode.react:
-        specifier: 4.2.0
+        specifier: 'catalog:'
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: 19.2.7
+        specifier: 'catalog:'
         version: 19.2.7
       react-dom:
-        specifier: 19.2.7
+        specifier: 'catalog:'
         version: 19.2.7(react@19.2.7)
+      vite:
+        specifier: 'catalog:'
+        version: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
 
   packages/amplify-auth-hooks:
     dependencies:
@@ -2527,8 +2539,8 @@ packages:
     resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
-  vite@8.1.0:
-    resolution: {integrity: sha512-BuJcQK/56NQTWDGn4ABea3q4SSBdNPWwNZKTkkUpcMPnLoquSYH8llRtSUIgoL1KSCpHt5eghLShn50mH36y7Q==}
+  vite@8.1.3:
+    resolution: {integrity: sha512-Ds+gBRbj0lwRO2Y5hwnUBdxSwlAve9LeRyU4sNnAr0ewW0gWF0n5bgXgUzbgZ49MV9BVUAQUFYVcDUcilUExMA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3300,13 +3312,13 @@ snapshots:
   '@fast-check/vitest@0.4.1(vitest@4.1.10)':
     dependencies:
       fast-check: 4.8.0
-      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.0)
+      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.3)
 
-  '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@7.0.2)(vite@8.1.0)':
+  '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@7.0.2)(vite@8.1.3)':
     dependencies:
       glob: 13.0.6
       react-docgen-typescript: 2.4.0(typescript@7.0.2)
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
     optionalDependencies:
       typescript: 7.0.2
 
@@ -3639,10 +3651,10 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@storybook/addon-docs@10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)':
+  '@storybook/addon-docs@10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)':
     dependencies:
       '@mdx-js/react': 3.1.1(@types/react@19.2.17)(react@19.2.7)
-      '@storybook/csf-plugin': 10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)
+      '@storybook/csf-plugin': 10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)
       '@storybook/icons': 2.1.0(react@19.2.7)
       '@storybook/react-dom-shim': 10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(react-dom@19.2.7)(react@19.2.7)(storybook@10.4.6)
       react: 19.2.7
@@ -3672,30 +3684,30 @@ snapshots:
       '@storybook/icons': 2.1.0(react@19.2.7)
       storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react@19.2.7)
     optionalDependencies:
-      '@vitest/browser': 4.1.10(vite@8.1.0)(vitest@4.1.10)
+      '@vitest/browser': 4.1.10(vite@8.1.3)(vitest@4.1.10)
       '@vitest/runner': 4.1.10
-      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.0)
+      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.3)
     transitivePeerDependencies:
       - react
 
-  '@storybook/builder-vite@10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)':
+  '@storybook/builder-vite@10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)':
     dependencies:
-      '@storybook/csf-plugin': 10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)
+      '@storybook/csf-plugin': 10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)
       storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react@19.2.7)
       ts-dedent: 2.3.0
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
     transitivePeerDependencies:
       - esbuild
       - rollup
       - webpack
 
-  '@storybook/csf-plugin@10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)':
+  '@storybook/csf-plugin@10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)':
     dependencies:
       storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react@19.2.7)
       unplugin: 2.3.11
     optionalDependencies:
       esbuild: 0.28.1
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
 
   '@storybook/global@5.0.0': {}
 
@@ -3712,11 +3724,11 @@ snapshots:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
 
-  '@storybook/react-vite@10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.7)(react@19.2.7)(storybook@10.4.6)(typescript@7.0.2)(vite@8.1.0)':
+  '@storybook/react-vite@10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.7)(react@19.2.7)(storybook@10.4.6)(typescript@7.0.2)(vite@8.1.3)':
     dependencies:
-      '@joshwooding/vite-plugin-react-docgen-typescript': 0.7.0(typescript@7.0.2)(vite@8.1.0)
+      '@joshwooding/vite-plugin-react-docgen-typescript': 0.7.0(typescript@7.0.2)(vite@8.1.3)
       '@rollup/pluginutils': 5.4.0
-      '@storybook/builder-vite': 10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.0)
+      '@storybook/builder-vite': 10.4.6(esbuild@0.28.1)(storybook@10.4.6)(vite@8.1.3)
       '@storybook/react': 10.4.6(@types/react-dom@19.2.3)(@types/react@19.2.17)(react-dom@19.2.7)(react@19.2.7)(storybook@10.4.6)(typescript@7.0.2)
       empathic: 2.0.1
       magic-string: 0.30.21
@@ -3726,7 +3738,7 @@ snapshots:
       resolve: 1.22.12
       storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react@19.2.7)
       tsconfig-paths: 4.2.0
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
@@ -3925,21 +3937,21 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@vitejs/plugin-react@6.0.3(vite@8.1.0)':
+  '@vitejs/plugin-react@6.0.3(vite@8.1.3)':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
 
-  '@vitest/browser@4.1.10(vite@8.1.0)(vitest@4.1.10)':
+  '@vitest/browser@4.1.10(vite@8.1.3)(vitest@4.1.10)':
     dependencies:
       '@blazediff/core': 1.9.1
-      '@vitest/mocker': 4.1.10(vite@8.1.0)
+      '@vitest/mocker': 4.1.10(vite@8.1.3)
       '@vitest/utils': 4.1.10
       magic-string: 0.30.21
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.0)
+      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.3)
       ws: 8.21.0
     transitivePeerDependencies:
       - bufferutil
@@ -3959,9 +3971,9 @@ snapshots:
       obug: 2.1.3
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.0)
+      vitest: 4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.3)
     optionalDependencies:
-      '@vitest/browser': 4.1.10(vite@8.1.0)(vitest@4.1.10)
+      '@vitest/browser': 4.1.10(vite@8.1.3)(vitest@4.1.10)
 
   '@vitest/expect@4.1.10':
     dependencies:
@@ -3972,13 +3984,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.10(vite@8.1.0)':
+  '@vitest/mocker@4.1.10(vite@8.1.3)':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -4864,7 +4876,7 @@ snapshots:
 
   uuid@11.1.1: {}
 
-  vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.1):
+  vite@8.1.3(@types/node@25.9.4)(esbuild@0.28.1):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -4876,10 +4888,10 @@ snapshots:
       esbuild: 0.28.1
       fsevents: 2.3.3
 
-  vitest@4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.0):
+  vitest@4.1.10(@types/node@25.9.4)(@vitest/coverage-v8@4.1.10)(jsdom@29.1.1)(vite@8.1.3):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.1.0)
+      '@vitest/mocker': 4.1.10(vite@8.1.3)
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -4896,7 +4908,7 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.1)
+      vite: 8.1.3(@types/node@25.9.4)(esbuild@0.28.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.4
