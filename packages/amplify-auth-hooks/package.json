@@ -43,7 +43,7 @@
     }
   },
   "scripts": {
-    "build": "vite build",
+    "build": "rolldown -c",
     "prepublishOnly": "pnpm run build",
     "lint": "biome check --write",
     "lint:ci": "biome ci",

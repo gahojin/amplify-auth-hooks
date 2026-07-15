@@ -13,11 +13,11 @@ catalog:
   playwright: 1.61.1
   react: &react_ver 19.2.7
   react-dom: *react_ver
+  rolldown: 1.1.5
+  rolldown-plugin-dts: 0.27.7
   storybook: &storybook_ver 10.4.6
   turbo: 2.9.18
-  typescript: 6.0.3
-  unplugin-dts: 1.0.2
-  vite: 8.1.0
+  typescript: 7.0.2
   vitest: &vitest_ver 4.1.9
   xstate: 5.32.2
   '@aws-amplify/auth': 6.20.0
