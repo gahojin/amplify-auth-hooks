@@ -6,7 +6,7 @@ export const getInputIndexFiles = (exports: Record<string, unknown>) => {
   const entries = Object.keys(exports)
     .filter((entry) => !entry.endsWith('.json'))
     .map((entry) => {
-      const name = path.basename(entry)
+      const name = entry.replace(/^\.\/?/, '') || '.'
       const chunkName = name === '.' ? 'index' : `${name}/index`
       return [chunkName, path.resolve('src', name, 'index.ts')]
     })
@@ -23,7 +23,7 @@ export default defineConfig({
   experimental: {
     nativeMagicString: true,
   },
-  output: [{ dir: 'dist', format: 'es', sourcemap: true, cleanDir: true, comments: false }],
+  output: [{ dir: 'dist', format: 'es', sourcemap: true, cleanDir: true, comments: { jsdoc: true, legal: true } }],
   plugins: [
     dts({
       oxc: true,
