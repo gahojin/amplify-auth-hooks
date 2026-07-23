@@ -31,7 +31,7 @@ catalog:
   '@storybook/addon-links': *storybook_ver
   '@storybook/addon-vitest': *storybook_ver
   '@storybook/react-vite': *storybook_ver
-  '@types/node': 26.1.0
+  '@types/node': 26.1.1
   '@types/react': 19.2.17
   '@types/react-dom': 19.2.3
   '@vitejs/plugin-react': 6.0.3
