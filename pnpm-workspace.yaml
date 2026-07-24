@@ -16,11 +16,11 @@ catalog:
   react: &react_ver 19.2.7
   react-dom: *react_ver
   rolldown: 1.2.0
-  rolldown-plugin-dts: 0.27.9
-  storybook: &storybook_ver 10.5.0
+  rolldown-plugin-dts: 0.27.10
+  storybook: &storybook_ver 10.5.2
   turbo: 2.10.5
   typescript: 7.0.2
-  vite: 8.1.4
+  vite: 8.1.5
   vitest: &vitest_ver 4.1.10
   xstate: 5.32.5
   '@aws-amplify/auth': 6.20.0
@@ -31,7 +31,7 @@ catalog:
   '@storybook/addon-links': *storybook_ver
   '@storybook/addon-vitest': *storybook_ver
   '@storybook/react-vite': *storybook_ver
-  '@types/node': 26.1.0
+  '@types/node': 26.1.1
   '@types/react': 19.2.17
   '@types/react-dom': 19.2.3
   '@vitejs/plugin-react': 6.0.3
