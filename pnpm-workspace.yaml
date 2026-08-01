@@ -9,23 +9,23 @@ allowBuilds:
 dedupePeers: true
 
 catalog:
-  aws-amplify: 6.18.0
+  aws-amplify: 6.19.0
   jsdom: 29.1.1
-  playwright: 1.61.1
+  playwright: 1.62.0
   qrcode.react: 4.2.0
   react: &react_ver 19.2.7
   react-dom: *react_ver
   rolldown: 1.2.0
   rolldown-plugin-dts: 0.27.14
   storybook: &storybook_ver 10.5.2
-  turbo: 2.10.5
+  turbo: 2.10.6
   typescript: 7.0.2
   vite: 8.1.5
   vitest: &vitest_ver 4.1.10
   xstate: 5.32.5
   '@aws-amplify/auth': 6.20.0
-  '@aws-amplify/core': 6.16.4
-  '@biomejs/biome': 2.5.4
+  '@aws-amplify/core': 6.17.0
+  '@biomejs/biome': 2.5.5
   '@fast-check/vitest': 0.4.1
   '@storybook/addon-docs': *storybook_ver
   '@storybook/addon-links': *storybook_ver
@@ -34,7 +34,7 @@ catalog:
   '@types/node': 26.1.1
   '@types/react': 19.2.17
   '@types/react-dom': 19.2.3
-  '@vitejs/plugin-react': 6.0.3
+  '@vitejs/plugin-react': 6.0.4
   '@testing-library/react': 16.3.2
   '@vitest/browser': *vitest_ver
   '@vitest/coverage-v8': *vitest_ver
