@@ -1,41 +1,55 @@
 import { getTotpCodeURL, useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
+import { fetchUserAttributes, setUpTOTP, updateMFAPreference, verifyTOTPSetup } from 'aws-amplify/auth'
 import { QRCodeSVG } from 'qrcode.react'
-import { useCallback, useEffect, useState } from 'react'
+import { type PropsWithChildren, useCallback, useEffect, useMemo, useState, useTransition } from 'react'
 import ErrorMessage from './ErrorMessage'
 
-const SetupTotp = () => {
-  const { isPending, totpSecretCode, username, handleSubmit, setRoute } = useAuthenticator(({ isPending, totpSecretCode, username }) => [
-    isPending,
-    totpSecretCode,
-    username,
-  ])
-  const [totpIssuer, setTotpIssuer] = useState('AWSCognito')
-  const [totpUsername, setTotpUserName] = useState('')
-  const [qrcode, setQrcode] = useState<string | null>(null)
+const getUserEmail = async () => {
+  try {
+    const userAttributes = await fetchUserAttributes()
+    return userAttributes.email
+  } catch {
+    return null
+  }
+}
+
+type CommonProps = PropsWithChildren<{
+  isPending: boolean
+  issuer: string
+  username: string
+  secretCode: string
+  verifyCode: (code: string) => void
+}>
+
+const Common = ({ isPending, issuer, username, secretCode, verifyCode, children }: CommonProps) => {
+  const [totpIssuer, setTotpIssuer] = useState(issuer)
+  const [totpUsername, setTotpUsername] = useState(username)
   const [confirmationCode, setConfirmationCode] = useState('')
 
-  const generateQrCode = useCallback(() => {
-    if (!totpSecretCode) {
-      return
+  // Sync props to state after mount when local state is still empty
+  useEffect(() => {
+    if (issuer && !totpIssuer) {
+      setTotpIssuer(issuer)
     }
-    const totpCode = getTotpCodeURL(totpIssuer, totpUsername, totpSecretCode)
-    setQrcode(totpCode)
-  }, [totpIssuer, totpUsername, totpSecretCode])
+  }, [issuer, totpIssuer])
 
   useEffect(() => {
-    generateQrCode()
-  }, [generateQrCode])
-
-  useEffect(() => {
-    if (username) {
-      setTotpUserName(username)
+    if (username && !totpUsername) {
+      setTotpUsername(username)
     }
-  }, [username])
+  }, [username, totpUsername])
+
+  const qrCode = useMemo(() => {
+    if (!totpIssuer || !totpUsername || !secretCode) {
+      return null
+    }
+    return getTotpCodeURL(totpIssuer, totpUsername, secretCode)
+  }, [totpIssuer, totpUsername, secretCode])
 
   return (
     <form>
       <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1em', width: '300px' }}>
-        <p>totpSecretCode: {totpSecretCode}</p>
+        <p>totpSecretCode: {secretCode}</p>
         <label>
           issuer:
           <input
@@ -53,12 +67,13 @@ const SetupTotp = () => {
             type="text"
             name="totpUsername"
             value={totpUsername}
-            onChange={(e) => setTotpUserName(e.target.value)}
+            onChange={(e) => setTotpUsername(e.target.value)}
             disabled={isPending}
             autoComplete="username"
           />
         </label>
-        {qrcode && <QRCodeSVG value={qrcode} />}
+        {qrCode}
+        {qrCode && <QRCodeSVG value={qrCode} />}
 
         <label>
           code:
@@ -71,16 +86,104 @@ const SetupTotp = () => {
             autoComplete="off"
           />
         </label>
-        <button type="button" onClick={() => handleSubmit({ challengeResponse: confirmationCode })} disabled={isPending}>
+        <button type="button" onClick={() => verifyCode(confirmationCode)} disabled={isPending}>
           send
         </button>
-        <button type="button" onClick={() => setRoute('signIn')} disabled={isPending}>
-          signIn
-        </button>
-        <ErrorMessage />
+        {children}
       </div>
     </form>
   )
 }
 
-export default SetupTotp
+export const SetupTOTPManual = () => {
+  const [secretCode, setSecretCode] = useState('')
+  const [username, setUsername] = useState('')
+  const [isPending, startTransition] = useTransition()
+  const [setupErrorMessage, setSetupErrorMessage] = useState('')
+  const [verifyErrorMessage, setVerifyErrorMessage] = useState('')
+  const [preferenceErrorMessage, setPreferenceErrorMessage] = useState('')
+
+  const setupTotp = useCallback(() => {
+    setSetupErrorMessage('')
+    void setUpTOTP()
+      .then((value) => setSecretCode(value.sharedSecret))
+      .catch((err) => setSetupErrorMessage(err.toString()))
+  }, [])
+
+  useEffect(() => {
+    setupTotp()
+  }, [setupTotp])
+
+  useEffect(() => {
+    void getUserEmail().then((value) => setUsername(value ?? ''))
+  }, [])
+
+  const updatePreference = useCallback(async () => {
+    setPreferenceErrorMessage('')
+    try {
+      await updateMFAPreference({ totp: 'PREFERRED' })
+    } catch (err: unknown) {
+      setPreferenceErrorMessage(`MFA preference update failed: ${err}`)
+    }
+  }, [])
+
+  const verifyCode = useCallback((code: string) => {
+    startTransition(async () => {
+      setVerifyErrorMessage('')
+      setPreferenceErrorMessage('')
+      try {
+        await verifyTOTPSetup({ code })
+        await updatePreference()
+      } catch (err: unknown) {
+        setVerifyErrorMessage(`Invalid OTP code: ${err}`)
+      }
+    })
+  }, [updatePreference])
+
+  return secretCode ? (
+    <Common isPending={isPending} secretCode={secretCode} issuer="AWSCognito" username={username} verifyCode={verifyCode}>
+      {verifyErrorMessage && <div>{verifyErrorMessage}</div>}
+      {preferenceErrorMessage && (
+        <div>
+          {preferenceErrorMessage}
+          <button type="button" onClick={() => void updatePreference()} disabled={isPending}>
+            Retry MFA Preference Update
+          </button>
+        </div>
+      )}
+    </Common>
+  ) : (
+    <div>
+      {setupErrorMessage || 'Loading...'}
+      {setupErrorMessage && (
+        <button type="button" onClick={setupTotp}>
+          Retry Setup
+        </button>
+      )}
+    </div>
+  )
+}
+
+export const SetupTotp = () => {
+  const { isPending, totpSecretCode, handleSubmit, setRoute } = useAuthenticator(({ totpSecretCode }) => [totpSecretCode])
+  const [username, setUsername] = useState('')
+
+  useEffect(() => {
+    void getUserEmail().then((value) => setUsername(value ?? ''))
+  }, [])
+
+  const verifyCode = useCallback((code: string) => {
+    handleSubmit({ challengeResponse: code })
+  }, [])
+
+  return totpSecretCode ? (
+    <Common isPending={isPending} secretCode={totpSecretCode} issuer="AWSCognito" username={username} verifyCode={verifyCode}>
+      <button type="button" onClick={() => setRoute('signIn')} disabled={isPending}>
+        signIn
+      </button>
+      <ErrorMessage />
+    </Common>
+  ) : (
+    'Loading...'
+  )
+}

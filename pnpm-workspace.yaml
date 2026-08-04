@@ -10,15 +10,15 @@ dedupePeers: true
 
 catalog:
   aws-amplify: 6.19.0
-  jsdom: 29.1.1
+  jsdom: 30.0.1
   playwright: 1.62.0
   qrcode.react: 4.2.0
-  react: &react_ver 19.2.7
+  react: &react_ver 19.2.8
   react-dom: *react_ver
   rolldown: 1.2.0
   rolldown-plugin-dts: 0.27.14
-  storybook: &storybook_ver 10.5.2
-  turbo: 2.10.6
+  storybook: &storybook_ver 10.5.5
+  turbo: 2.10.7
   typescript: 7.0.2
   vite: 8.1.5
   vitest: &vitest_ver 4.1.10
@@ -31,7 +31,7 @@ catalog:
   '@storybook/addon-links': *storybook_ver
   '@storybook/addon-vitest': *storybook_ver
   '@storybook/react-vite': *storybook_ver
-  '@types/node': 26.1.1
+  '@types/node': 26.1.2
   '@types/react': 19.2.17
   '@types/react-dom': 19.2.3
   '@vitejs/plugin-react': 6.0.4
@@ -44,7 +44,11 @@ catalog:
   '@xstate/react': 6.1.0
 
 overrides:
+  # CVE-2026-69152
+  brace-expansion: '>=5.0.9'
+  # GHSA-g7r4-m6w7-qqqr
   esbuild: '>=0.28.1'
+  # GHSA-8r6m-32jq-jx6q
   fast-xml-parser: '>=5.10.1'
   rolldown: 'catalog:'
   '@vitest/expect': 'catalog:'
