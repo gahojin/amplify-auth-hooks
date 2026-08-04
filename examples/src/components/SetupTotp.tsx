@@ -26,6 +26,19 @@ const Common = ({ isPending, issuer, username, secretCode, verifyCode, children 
   const [totpUsername, setTotpUsername] = useState(username)
   const [confirmationCode, setConfirmationCode] = useState('')
 
+  // Sync props to state after mount when local state is still empty
+  useEffect(() => {
+    if (issuer && !totpIssuer) {
+      setTotpIssuer(issuer)
+    }
+  }, [issuer, totpIssuer])
+
+  useEffect(() => {
+    if (username && !totpUsername) {
+      setTotpUsername(username)
+    }
+  }, [username, totpUsername])
+
   const qrCode = useMemo(() => {
     if (!totpIssuer || !totpUsername || !secretCode) {
       return null
@@ -86,36 +99,68 @@ export const SetupTOTPManual = () => {
   const [secretCode, setSecretCode] = useState('')
   const [username, setUsername] = useState('')
   const [isPending, startTransition] = useTransition()
-  const [errorMessage, setErrorMessage] = useState('')
+  const [setupErrorMessage, setSetupErrorMessage] = useState('')
+  const [verifyErrorMessage, setVerifyErrorMessage] = useState('')
+  const [preferenceErrorMessage, setPreferenceErrorMessage] = useState('')
 
-  useEffect(() => {
+  const setupTotp = useCallback(() => {
+    setSetupErrorMessage('')
     void setUpTOTP()
       .then((value) => setSecretCode(value.sharedSecret))
-      .catch((err) => setErrorMessage(err.toString()))
+      .catch((err) => setSetupErrorMessage(err.toString()))
   }, [])
+
+  useEffect(() => {
+    setupTotp()
+  }, [setupTotp])
 
   useEffect(() => {
     void getUserEmail().then((value) => setUsername(value ?? ''))
   }, [])
 
+  const updatePreference = useCallback(async () => {
+    setPreferenceErrorMessage('')
+    try {
+      await updateMFAPreference({ totp: 'PREFERRED' })
+    } catch (err: unknown) {
+      setPreferenceErrorMessage(`MFA preference update failed: ${err}`)
+    }
+  }, [])
+
   const verifyCode = useCallback((code: string) => {
     startTransition(async () => {
-      setErrorMessage('')
+      setVerifyErrorMessage('')
+      setPreferenceErrorMessage('')
       try {
         await verifyTOTPSetup({ code })
-        await updateMFAPreference({ totp: 'PREFERRED' })
+        await updatePreference()
       } catch (err: unknown) {
-        setErrorMessage(`OTP code is invalid, or MFA preference update failed. ${err}`)
+        setVerifyErrorMessage(`Invalid OTP code: ${err}`)
       }
     })
-  }, [])
+  }, [updatePreference])
 
   return secretCode ? (
     <Common isPending={isPending} secretCode={secretCode} issuer="AWSCognito" username={username} verifyCode={verifyCode}>
-      {errorMessage}
+      {verifyErrorMessage && <div>{verifyErrorMessage}</div>}
+      {preferenceErrorMessage && (
+        <div>
+          {preferenceErrorMessage}
+          <button type="button" onClick={() => void updatePreference()} disabled={isPending}>
+            Retry MFA Preference Update
+          </button>
+        </div>
+      )}
     </Common>
   ) : (
-    (errorMessage ?? 'Loading...')
+    <div>
+      {setupErrorMessage || 'Loading...'}
+      {setupErrorMessage && (
+        <button type="button" onClick={setupTotp}>
+          Retry Setup
+        </button>
+      )}
+    </div>
   )
 }
 
