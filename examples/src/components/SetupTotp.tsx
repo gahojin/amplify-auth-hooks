@@ -59,6 +59,7 @@ const Common = ({ isPending, issuer, username, secretCode, verifyCode, children 
             autoComplete="username"
           />
         </label>
+        {qrCode}
         {qrCode && <QRCodeSVG value={qrCode} />}
 
         <label>
@@ -88,7 +89,9 @@ export const SetupTOTPManual = () => {
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    void setUpTOTP().then((value) => setSecretCode(value.sharedSecret))
+    void setUpTOTP()
+      .then((value) => setSecretCode(value.sharedSecret))
+      .catch((err) => setErrorMessage(err.toString()))
   }, [])
 
   useEffect(() => {
@@ -102,7 +105,7 @@ export const SetupTOTPManual = () => {
         await verifyTOTPSetup({ code })
         await updateMFAPreference({ totp: 'PREFERRED' })
       } catch (err: unknown) {
-        setErrorMessage(`OTP code is invalid. ${err}`)
+        setErrorMessage(`OTP code is invalid, or MFA preference update failed. ${err}`)
       }
     })
   }, [])
@@ -112,7 +115,7 @@ export const SetupTOTPManual = () => {
       {errorMessage}
     </Common>
   ) : (
-    'Loading...'
+    (errorMessage ?? 'Loading...')
   )
 }
 

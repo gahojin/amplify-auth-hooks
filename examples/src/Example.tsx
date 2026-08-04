@@ -27,7 +27,7 @@ const Example = () => {
       {isPending ? (
         'loading...'
       ) : (
-        <p>
+        <div>
           Route: {route}
           <br />
           UserId: {user?.userId}
@@ -45,7 +45,7 @@ const Example = () => {
             SignOut
           </button>
           <SetupTOTPManual />
-        </p>
+        </div>
       )}
     </div>
   )

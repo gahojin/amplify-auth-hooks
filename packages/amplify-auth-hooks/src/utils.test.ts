@@ -12,15 +12,14 @@
 import { describe, it } from 'vitest'
 import { getTotpCodeURL } from './index.js'
 
-const SECRET_KEY = 'shhhhh'
-const USERNAME = 'username'
-
 describe('getTotpCodeURL', () => {
   it('returns the expected value in the happy path', () => {
-    const issuer = 'issuer'
-
-    const customTotpCode = getTotpCodeURL(issuer, USERNAME, SECRET_KEY)
+    const customTotpCode = getTotpCodeURL('issuer', 'username', 'shhhhh')
 
     expect(customTotpCode).toBe('otpauth://totp/issuer:username?secret=shhhhh&issuer=issuer')
+  })
+  it('contain # in username', () => {
+    const customTotpCode = getTotpCodeURL('issuer#name', 'username#abc', 'shhhhh#abc')
+    expect(customTotpCode).toBe('otpauth://totp/issuer%23name:username%23abc?secret=shhhhh%23abc&issuer=issuer%23name')
   })
 })
