@@ -1,6 +1,7 @@
 export { AuthenticatorContext, AuthenticatorProvider } from '~/context/index.js'
 export { type UseAuthResult, useAuth } from '~/hooks/useAuth.js'
 export { useAuthenticator } from '~/hooks/useAuthenticator.js'
+export { useTotpPreference } from '~/hooks/useTotpPreference.js'
 export type * from '~/types/hooks.js'
 export type * from '~/types/machines.js'
 export * from '~/types/user.js'
