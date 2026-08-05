@@ -3,7 +3,7 @@ import {
   updateMFAPreference as amplifyUpdateMFAPreference,
   verifyTOTPSetup as amplifyVerifyTOTPSetup,
 } from '@aws-amplify/auth'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { UseTotpPreference, UseTotpPreferenceOptions, UseTotpPreferenceStatus } from '~/types/hooks.js'
 
 const defaultOptions: Required<UseTotpPreferenceOptions> = {
@@ -12,51 +12,70 @@ const defaultOptions: Required<UseTotpPreferenceOptions> = {
   verifyTOTPSetup: amplifyVerifyTOTPSetup,
 }
 
+type RunOptions<T> = {
+  onSuccess: (result: T) => void
+  onError?: (e: unknown) => void
+  rethrow?: boolean
+}
+
+const useGuardedRequest = () => {
+  const [status, setStatus] = useState<UseTotpPreferenceStatus>('loading')
+  const generationRef = useRef(0)
+
+  const run = useCallback(async <T>(task: () => Promise<T>, options: RunOptions<T>) => {
+    const generation = ++generationRef.current
+    setStatus('loading')
+    try {
+      const result = await task()
+      if (generation !== generationRef.current) {
+        // 後続の操作が行われたため、ステータス更新は行わない
+        return
+      }
+      options.onSuccess(result)
+      setStatus('idle')
+    } catch (e) {
+      options.onError?.(e)
+      if (generation === generationRef.current) {
+        // 後続の操作が行われていない場合のみ、ステータス更新する
+        setStatus('error')
+      }
+      if (options.rethrow) {
+        throw e
+      }
+    }
+  }, [])
+
+  return { status, run }
+}
+
 export function useTotpPreference(options?: UseTotpPreferenceOptions): UseTotpPreference {
   const { fetchMFAPreference, updateMFAPreference, verifyTOTPSetup } = { ...defaultOptions, ...options }
   const [enabled, setEnabled] = useState(false)
-  const [status, setStatus] = useState<UseTotpPreferenceStatus>('loading')
+  const { status, run } = useGuardedRequest()
 
-  const reload = useCallback(async () => {
-    setStatus('loading')
-    try {
-      const { enabled: list } = await fetchMFAPreference()
-      setEnabled(!!list?.includes('TOTP'))
-      setStatus('idle')
-    } catch {
-      setStatus('error')
-    }
-  }, [fetchMFAPreference])
+  const reload = useCallback(
+    () => run(() => fetchMFAPreference(), { onSuccess: ({ enabled }) => setEnabled(!!enabled?.includes('TOTP')) }),
+    [fetchMFAPreference, run],
+  )
 
-  useEffect(() => void reload(), [reload])
-
-  const disable = useCallback(async () => {
-    setStatus('loading')
-    try {
-      await updateMFAPreference({ totp: 'DISABLED' })
-      setEnabled(false)
-      setStatus('idle')
-    } catch (e) {
-      setStatus('error')
-      throw e
-    }
-  }, [updateMFAPreference])
+  const disable = useCallback(
+    () => run(() => updateMFAPreference({ totp: 'DISABLED' }), { onSuccess: () => setEnabled(false), rethrow: true }),
+    [updateMFAPreference, run],
+  )
 
   const verifyCode = useCallback(
-    async (code: string) => {
-      setStatus('loading')
-      try {
-        await verifyTOTPSetup({ code })
-        await updateMFAPreference({ totp: 'PREFERRED' })
-        setEnabled(true)
-        setStatus('idle')
-      } catch (e) {
-        setStatus('error')
-        throw e
-      }
-    },
-    [verifyTOTPSetup, updateMFAPreference],
+    (code: string) =>
+      run(
+        async () => {
+          await verifyTOTPSetup({ code })
+          await updateMFAPreference({ totp: 'PREFERRED' })
+        },
+        { onSuccess: () => setEnabled(true), rethrow: true },
+      ),
+    [verifyTOTPSetup, updateMFAPreference, run],
   )
+
+  useEffect(() => void reload(), [reload])
 
   return { enabled, status, disable, verifyCode }
 }
