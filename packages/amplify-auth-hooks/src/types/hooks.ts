@@ -1,4 +1,4 @@
-import type { AuthUser, CodeDeliveryDetails } from '@aws-amplify/auth'
+import type { AuthUser, CodeDeliveryDetails, fetchMFAPreference, updateMFAPreference, verifyTOTPSetup } from '@aws-amplify/auth'
 import type { UnverifiedUserAttributes } from '~/types/user.js'
 import type { AuthAllowedMFATypes, AuthEventData, NavigableRoute } from './machines.js'
 
@@ -52,3 +52,18 @@ export type AuthenticatorSendEventAliases = {
 export type AuthenticatorServiceFacade = AuthenticatorSendEventAliases & AuthenticatorServiceContextFacade
 
 export type Comparator = (currentMachineContext: AuthenticatorMachineContext, nextMachineContext: AuthenticatorMachineContext) => boolean
+
+export type UseTotpPreferenceStatus = 'loading' | 'idle' | 'error'
+
+export type UseTotpPreferenceOptions = {
+  fetchMFAPreference?: typeof fetchMFAPreference
+  updateMFAPreference?: typeof updateMFAPreference
+  verifyTOTPSetup?: typeof verifyTOTPSetup
+}
+
+export type UseTotpPreference = {
+  enabled: boolean
+  status: UseTotpPreferenceStatus
+  disable: () => Promise<void>
+  verifyCode: (code: string) => Promise<void>
+}

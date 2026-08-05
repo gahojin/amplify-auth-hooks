@@ -127,18 +127,21 @@ export const SetupTOTPManual = () => {
     }
   }, [])
 
-  const verifyCode = useCallback((code: string) => {
-    startTransition(async () => {
-      setVerifyErrorMessage('')
-      setPreferenceErrorMessage('')
-      try {
-        await verifyTOTPSetup({ code })
-        await updatePreference()
-      } catch (err: unknown) {
-        setVerifyErrorMessage(`Invalid OTP code: ${err}`)
-      }
-    })
-  }, [updatePreference])
+  const verifyCode = useCallback(
+    (code: string) => {
+      startTransition(async () => {
+        setVerifyErrorMessage('')
+        setPreferenceErrorMessage('')
+        try {
+          await verifyTOTPSetup({ code })
+          await updatePreference()
+        } catch (err: unknown) {
+          setVerifyErrorMessage(`Invalid OTP code: ${err}`)
+        }
+      })
+    },
+    [updatePreference],
+  )
 
   return secretCode ? (
     <Common isPending={isPending} secretCode={secretCode} issuer="AWSCognito" username={username} verifyCode={verifyCode}>
