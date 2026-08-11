@@ -30,7 +30,7 @@
     "@vitest/browser": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "playwright": "catalog:",
-    "rolldown": "1.2.2",
+    "rolldown": "catalog:",
     "rolldown-plugin-dts": "catalog:",
     "storybook": "catalog:",
     "turbo": "catalog:",
