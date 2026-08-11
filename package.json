@@ -30,12 +30,12 @@
     "@vitest/browser": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "playwright": "catalog:",
-    "rolldown": "catalog:",
+    "rolldown": "1.2.2",
     "rolldown-plugin-dts": "catalog:",
     "storybook": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "packageManager": "pnpm@11.17.0"
+  "packageManager": "pnpm@11.20.0"
 }

@@ -162,8 +162,3 @@ export type Handlers = {
   resendSignUpCode: (input: ResendSignUpCodeInput) => Promise<ResendSignUpCodeOutput>
   sendUserAttributeVerificationCode: (input: SendUserAttributeVerificationCodeInput) => Promise<SendUserAttributeVerificationCodeOutput>
 }
-
-export type AuthError = Error & {
-  __type: string
-  message?: string
-}
