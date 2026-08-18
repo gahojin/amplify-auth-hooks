@@ -80,7 +80,11 @@ For each identified issue, formulate a review comment adhering to the following 
 
 9. **Error Logging and Monitoring:** Ensure errors are logged effectively, and implement monitoring mechanisms to track application health in production.
 
-10. **Action Versioning Rules**: If the pull request is using the latest version (v4 or later, or a specific SHA) in GitHub Actions (such as `actions/checkout`), please do not issue unnecessary warnings regarding version specifications or flag the code as "outdated."
+10. **Pinned SHA Recognition**:
+  - Pinned commit SHAs in GitHub Actions (e.g., `uses: actions/checkout@<SHA>`) are recognized as secure best practices for supply chain security.
+  - Do NOT comment on or request inline comments/tags (e.g., `# v4`) next to pinned SHAs. Treat pinned SHAs as fully compliant and valid.
+11. **Focus on Substance, Not Style**:
+  - Do NOT issue warnings for cosmetic choices, missing non-essential comments, or personal style preferences. Focus exclusively on critical functional bugs, logic errors, and severe security flaws.
 
 #### Comment Formatting and Content
 
