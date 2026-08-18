@@ -81,6 +81,7 @@ For each identified issue, formulate a review comment adhering to the following 
 10. **Pinned SHA Recognition**:
   - Pinned commit SHAs in GitHub Actions (e.g., `uses: actions/checkout@<SHA>`) are recognized as secure best practices for supply chain security.
   - Do NOT comment on or request inline comments/tags (e.g., `# v4`) next to pinned SHAs. Treat pinned SHAs as fully compliant and valid.
+
 11. **Focus on Substance, Not Style**:
   - Do NOT issue warnings for cosmetic choices, missing non-essential comments, or personal style preferences. Focus exclusively on critical functional bugs, logic errors, and severe security flaws.
 
@@ -182,4 +183,8 @@ Apply these severities consistently:
 
 - Double check that no English response remains in the final markdown output.
 
+- Do NOT output any XML or HTML tags like `<SUMMARY>` or `</SUMMARY>`.
+
+- Output the review using pure Markdown format directly.
+  
 """
