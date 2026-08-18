@@ -10,10 +10,6 @@ concurrency:
 
 permissions: {}
 
-defaults:
-  run:
-    shell: 'bash'
-
 jobs:
   review:
     if: |
@@ -35,7 +31,7 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: 'Prepare prompt context'
+      - name: Prepare prompt context
         shell: 'bash'
         run: |-
           mkdir -p .gemini
@@ -49,7 +45,7 @@ jobs:
           PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number }}'
           ADDITIONAL_CONTEXT: ''
 
-      - name: 'Run Gemini pull request review'
+      - name: Run Gemini pull request review
         uses: 'google-github-actions/run-gemini-cli@f77273f4c914e4bf38440cf36a0369cb64a37489' # v0.1.22
         env:
           GEMINI_CLI_TRUST_WORKSPACE: 'true'
