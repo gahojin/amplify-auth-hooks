@@ -15,9 +15,9 @@ catalog:
   qrcode.react: 4.2.0
   react: &react_ver 19.2.8
   react-dom: *react_ver
-  rolldown: 1.2.3
-  rolldown-plugin-dts: 0.28.0
-  storybook: &storybook_ver 10.5.6
+  rolldown: 1.2.4
+  rolldown-plugin-dts: 0.28.2
+  storybook: &storybook_ver 10.5.7
   turbo: 2.10.9
   typescript: 7.0.2
   vite: 8.2.1
@@ -25,11 +25,9 @@ catalog:
   xstate: 5.32.5
   '@aws-amplify/auth': 6.20.0
   '@aws-amplify/core': 6.18.0
-  '@biomejs/biome': 2.5.7
+  '@biomejs/biome': 2.5.8
   '@fast-check/vitest': 0.4.1
   '@storybook/addon-docs': *storybook_ver
-  '@storybook/addon-links': *storybook_ver
-  '@storybook/addon-vitest': *storybook_ver
   '@storybook/react-vite': *storybook_ver
   '@types/node': 26.2.0
   '@types/react': 19.2.18

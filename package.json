@@ -20,8 +20,6 @@
     "@biomejs/biome": "catalog:",
     "@fast-check/vitest": "catalog:",
     "@storybook/addon-docs": "catalog:",
-    "@storybook/addon-links": "catalog:",
-    "@storybook/addon-vitest": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
@@ -37,5 +35,5 @@
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "packageManager": "pnpm@11.20.0"
+  "packageManager": "pnpm@11.21.0"
 }
