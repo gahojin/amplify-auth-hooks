@@ -1,26 +1,21 @@
-import { createRequire } from 'node:module'
-import { dirname, join } from 'node:path'
 import type { StorybookConfig } from '@storybook/react-vite'
 
-const require = createRequire(import.meta.url)
-
-const getAbsolutePath = (value: string): string => {
-  return dirname(require.resolve(join(value, 'package.json')))
-}
-
 const config: StorybookConfig = {
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: ['@storybook/addon-docs', '@storybook/addon-vitest'],
+  typescript: {
+    reactDocgen: 'react-docgen',
+  },
+  core: {
+    disableTelemetry: true,
+  },
+  features: {},
   framework: {
-    name: getAbsolutePath('@storybook/react-vite'),
+    name: '@storybook/react-vite',
     options: {
       strictMode: true,
     },
   },
-  stories: ['../src/**/*.stories.@(mdx|js|jsx|ts|tsx)'],
-  typescript: {
-    reactDocgen: 'react-docgen',
-  },
-  addons: [getAbsolutePath('@storybook/addon-links'), getAbsolutePath('@storybook/addon-docs')],
-  core: {},
 }
 
 export default config
