@@ -20,7 +20,6 @@
     "@biomejs/biome": "catalog:",
     "@fast-check/vitest": "catalog:",
     "@storybook/addon-docs": "catalog:",
-    "@storybook/addon-vitest": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
