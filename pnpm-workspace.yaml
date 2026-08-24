@@ -17,8 +17,8 @@ catalog:
   react-dom: *react_ver
   rolldown: 1.2.4
   rolldown-plugin-dts: 0.28.2
-  storybook: &storybook_ver 10.5.7
-  turbo: 2.10.9
+  storybook: &storybook_ver 10.5.8
+  turbo: 2.10.10
   typescript: 7.0.2
   vite: 8.2.1
   vitest: &vitest_ver 4.1.10
