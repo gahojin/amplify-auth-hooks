@@ -19,8 +19,6 @@
   "dependencies": {
     "@biomejs/biome": "catalog:",
     "@fast-check/vitest": "catalog:",
-    "@storybook/addon-docs": "catalog:",
-    "@storybook/react-vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
@@ -30,7 +28,6 @@
     "playwright": "catalog:",
     "rolldown": "catalog:",
     "rolldown-plugin-dts": "catalog:",
-    "storybook": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
