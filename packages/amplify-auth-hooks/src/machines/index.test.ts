@@ -273,6 +273,7 @@ describe('authenticator', () => {
     await flushPromises()
 
     resolveUser({ userId: 'userid', username: 'stale-user' })
+    await flushPromises()
 
     // ユーザ情報が消えていること
     expect(actor.getSnapshot().value).toStrictEqual('signInActor')
