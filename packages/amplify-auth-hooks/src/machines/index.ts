@@ -71,6 +71,9 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
           onDone: { actions: 'setUser', target: '#authenticator.setup' },
           onError: { target: '#authenticator.setup' },
         },
+        // handle a sign out occurring while `getCurrentUser` is in flight,
+        // exiting cancels the invoke so a stale user cannot be applied
+        on: { SIGN_OUT: '#authenticator.signOut' },
       },
       setup: {
         initial: 'init',
@@ -91,6 +94,7 @@ export const createAuthenticatorMachine = (options?: AuthenticatorMachineOptions
           onDone: { actions: 'setUser', target: '#authenticator.authenticated' },
           onError: { target: 'setup' },
         },
+        on: { SIGN_OUT: '#authenticator.signOut' },
       },
       signInActor: {
         invoke: {

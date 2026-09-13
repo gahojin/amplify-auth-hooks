@@ -1,4 +1,4 @@
-import type { FetchUserAttributesOutput, GetCurrentUserOutput, SignInOutput } from '@aws-amplify/auth'
+import type { AuthUser, FetchUserAttributesOutput, GetCurrentUserOutput, SignInOutput, SignUpOutput } from '@aws-amplify/auth'
 import { describe, it } from 'vitest'
 import { createActor } from 'xstate'
 import type { Handlers } from '~/types/machines.js'
@@ -40,6 +40,22 @@ describe('authenticator', () => {
     expect(actor.getSnapshot().value).toStrictEqual('idle')
     await flushPromises()
     expect(actor.getSnapshot().value).toStrictEqual('signUpActor')
+  })
+
+  it('サインアップ後、自動サインインに遷移すること', async () => {
+    const signUp = vi.fn().mockResolvedValue({ nextStep: { signUpStep: 'COMPLETE_AUTO_SIGN_IN' } } as SignUpOutput)
+    const handlers = mockHandlers({ signUp })
+
+    const actor = createActor(createAuthenticatorMachine({ initialState: 'signUp', handlers }))
+    actor.start()
+
+    expect(actor.getSnapshot().value).toStrictEqual('idle')
+    await flushPromises()
+    expect(actor.getSnapshot().value).toStrictEqual('signUpActor')
+    // サインアップ
+    actor.send({ type: 'SUBMIT', data: {} })
+    await flushPromises()
+    expect(actor.getSnapshot().value).toStrictEqual('signInActor')
   })
 
   it('サインインに遷移すること', async () => {
@@ -230,6 +246,60 @@ describe('authenticator', () => {
 
     // getCurrentUserの値が格納されていること
     expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: { userId: mockUsername } }))
+
+    // サインアウト
+    actor.send({ type: 'SIGN_OUT' })
+    await flushPromises()
+
+    // ユーザ情報が消えていること
+    expect(actor.getSnapshot().value).toStrictEqual('signInActor')
+    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: undefined }))
+  })
+
+  it('ユーザー情報取得中、サインアウトが処理されること', async () => {
+    let resolveUser: (user: AuthUser) => void = () => {
+      throw new Error('not initialized')
+    }
+    const getCurrentUser = vi.fn().mockImplementation(() => new Promise((resolve) => (resolveUser = resolve)))
+    const handlers = mockHandlers({ getCurrentUser })
+
+    const actor = createActor(createAuthenticatorMachine({ handlers }))
+    actor.start()
+
+    expect(actor.getSnapshot().value).toStrictEqual('idle')
+
+    // サインアウト
+    actor.send({ type: 'SIGN_OUT' })
+    await flushPromises()
+
+    resolveUser({ userId: 'userid', username: 'stale-user' })
+
+    // ユーザ情報が消えていること
+    expect(actor.getSnapshot().value).toStrictEqual('signInActor')
+    expect(actor.getSnapshot().context).toStrictEqual(expect.objectContaining({ user: undefined }))
+  })
+
+  it('getCurrentUser状態中に、サインアウトが処理されること', async () => {
+    let calls = 0
+    const signIn = vi.fn().mockResolvedValue({ nextStep: { signInStep: 'DONE' } } as SignInOutput)
+    const getCurrentUser = vi.fn().mockImplementation(() => {
+      calls++
+      return calls === 1 ? Promise.reject() : Promise.resolve({})
+    })
+    const handlers = mockHandlers({ signIn, getCurrentUser })
+
+    const actor = createActor(createAuthenticatorMachine({ handlers }))
+    actor.start()
+
+    expect(actor.getSnapshot().value).toStrictEqual('idle')
+    await flushPromises()
+    expect(actor.getSnapshot().value).toStrictEqual('signInActor')
+
+    getCurrentUser.mockResolvedValue({ userId: mockUsername } as GetCurrentUserOutput)
+
+    // ユーザー情報取得
+    actor.send({ type: 'SIGN_IN_WITH_REDIRECT' })
+    expect(actor.getSnapshot().value).toStrictEqual('getCurrentUser')
 
     // サインアウト
     actor.send({ type: 'SIGN_OUT' })
