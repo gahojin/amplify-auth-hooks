@@ -15,42 +15,42 @@ catalog:
   qrcode.react: 4.2.0
   react: &react_ver 19.3.0
   react-dom: *react_ver
-  rolldown: 1.2.14
+  rolldown: 1.2.15
   rolldown-plugin-dts: 0.28.8
-  turbo: 2.11.9
+  turbo: 2.11.10
   typescript: 7.0.2
-  vite: 8.3.4
-  vitest: &vitest_ver 5.0.3
+  vite: 8.3.5
+  vitest: &vitest_ver 5.0.5
   xstate: 5.33.3
-  '@aws-amplify/auth': 6.21.2
-  '@aws-amplify/core': 6.19.3
-  '@biomejs/biome': 2.5.15
-  '@fast-check/vitest': 0.5.0
-  '@types/node': 26.6.5
-  '@types/react': 19.3.0
-  '@types/react-dom': 19.3.0
-  '@vitejs/plugin-react': 6.1.2
-  '@testing-library/react': 16.3.3
-  '@vitest/browser': *vitest_ver
-  '@vitest/coverage-v8': *vitest_ver
-  '@vitest/expect': *vitest_ver
-  '@vitest/mocker': *vitest_ver
-  '@vitest/spy': *vitest_ver
-  '@xstate/react': 6.1.0
+  "@aws-amplify/auth": 6.21.2
+  "@aws-amplify/core": 6.19.3
+  "@biomejs/biome": 2.6.3
+  "@fast-check/vitest": 0.5.0
+  "@types/node": 26.6.5
+  "@types/react": 19.3.0
+  "@types/react-dom": 19.3.0
+  "@vitejs/plugin-react": 6.1.2
+  "@testing-library/react": 16.3.3
+  "@vitest/browser": *vitest_ver
+  "@vitest/coverage-v8": *vitest_ver
+  "@vitest/expect": *vitest_ver
+  "@vitest/mocker": *vitest_ver
+  "@vitest/spy": *vitest_ver
+  "@xstate/react": 6.1.0
 
 overrides:
   # CVE-2026-69152
-  brace-expansion: '>=5.0.9'
+  brace-expansion: ">=5.0.9"
   # GHSA-g7r4-m6w7-qqqr
-  esbuild: '>=0.28.1'
+  esbuild: ">=0.28.1"
   # GHSA-8r6m-32jq-jx6q
-  fast-xml-parser: '>=5.10.1'
+  fast-xml-parser: ">=5.10.1"
   # CVE-2026-67213
   nanoid: ^3.3.17
-  rolldown: 'catalog:'
-  '@vitest/expect': 'catalog:'
-  '@vitest/mocker': 'catalog:'
-  '@vitest/spy': 'catalog:'
+  rolldown: "catalog:"
+  "@vitest/expect": "catalog:"
+  "@vitest/mocker": "catalog:"
+  "@vitest/spy": "catalog:"
 
 # リリースから一定時間経過していないか、信頼性低下したパッケージはインストールしない
 minimumReleaseAge: 2880 # 2d
