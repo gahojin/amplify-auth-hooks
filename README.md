@@ -6,21 +6,21 @@
 Amplify AuthのためのReact Hooks
 
 ## 使い方
- 
+
 ```shell
 npm install @gahojin-inc/amplify-auth-hooks
 ```
 
 ### サインインフローの構築
- 
+
 `AuthenticatorProvider` でラップし、`useAuthenticator` で現在の認証状態(`route`)に応じた画面を出し分けます。
- 
+
 ```tsx
 import { AuthenticatorProvider, useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
- 
+
 const Router = () => {
   const { route } = useAuthenticator(({ route }) => [route])
- 
+
   switch (route) {
     case 'signIn':
       return <SignIn />
@@ -34,18 +34,18 @@ const Router = () => {
       return null
   }
 }
- 
+
 const App = () => (
   <AuthenticatorProvider>
     <Router />
   </AuthenticatorProvider>
 )
 ```
- 
+
 各画面では `useAuthenticator` から取得できる `handleSubmit` や `setRoute` を使って、サインイン処理や画面遷移を行います。
- 
+
 `route` は以下のいずれかを取ります。
- 
+
 - `idle` / `setup` / `transition` — 初期化中
 - `signIn` / `signUp` — サインイン・サインアップ画面
 - `confirmSignIn` / `confirmSignUp` — 確認コード入力画面
@@ -59,12 +59,12 @@ const App = () => (
 ```tsx
 import { useAuthenticator } from '@gahojin-inc/amplify-auth-hooks'
 import { useState } from 'react'
- 
+
 const SignIn = () => {
   const { isPending, handleSubmit, setRoute } = useAuthenticator(({ isPending }) => [isPending])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
- 
+
   return (
     <form>
       <input value={username} onChange={(e) => setUsername(e.target.value)} disabled={isPending} />
@@ -79,15 +79,15 @@ const SignIn = () => {
   )
 }
 ```
- 
+
 ### 認証ユーザーの取得
- 
+
 ```tsx
 import { useAuth } from '@gahojin-inc/amplify-auth-hooks'
- 
+
 const Profile = () => {
   const { user, isLoading, error } = useAuth()
- 
+
   if (isLoading) return <p>loading...</p>
   if (error) return <p>{error.message}</p>
   return <p>{user?.username}</p>

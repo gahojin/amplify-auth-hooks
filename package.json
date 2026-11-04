@@ -9,7 +9,7 @@
   "scripts": {
     "prepare": "biome migrate --write",
     "build": "turbo run build --filter=!./examples/* --filter=!*props-docs",
-    "lint": "turbo run lint",
+    "lint": "biome check --write && turbo run lint",
     "lint:ci": "turbo run lint:ci",
     "check": "turbo run check",
     "test": "turbo run test:unit --filter=!./examples/* --filter=!*props-docs",
@@ -32,5 +32,5 @@
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "packageManager": "pnpm@12.11.2"
+  "packageManager": "pnpm@12.16.1"
 }
